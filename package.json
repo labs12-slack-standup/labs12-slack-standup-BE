@@ -1,0 +1,24 @@
+{
+  "name": "labs12-slack-standup-BE",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "server": "nodemon index.js"
+  },
+  "repository": "https://github.com/labs12-slack-standup/labs12-slack-standup-BE.git",
+  "author": "shaunmcarmody <shaun.carmody@live.co.uk>",
+  "license": "MIT",
+  "dependencies": {
+    "apollo-server": "^2.4.8",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "faker": "^4.1.0",
+    "graphql": "^14.2.1",
+    "helmet": "^3.16.0",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^0.16.5",
+    "knex-cleaner": "^1.1.4",
+    "pg": "^7.10.0"
+  }
+}
