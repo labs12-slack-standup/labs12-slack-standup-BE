@@ -5,6 +5,7 @@ module.exports = gql`
 		info: String!
 		Users: [User!]!
 		User(id: ID!): User!
+		UserByEmail(email: String!): User!
 	}
 
 	type User {
@@ -16,4 +17,5 @@ module.exports = gql`
 		roles: String!
 		teamId: ID
 	}
+
 `;
