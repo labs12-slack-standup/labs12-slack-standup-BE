@@ -17,6 +17,7 @@ const server = new ApolloServer({
 		process.env.NODE_ENV !== 'production'
 			? true
 			: GRAPHQL_PLAYGROUND_CONFIG,
+	introspection: true,
 	typeDefs,
 	resolvers
 });
