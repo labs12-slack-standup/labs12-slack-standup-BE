@@ -3,8 +3,8 @@ const typeDefs = require('./schema.js');
 const resolvers = require('./resolvers.js');
 
 const server = new ApolloServer({
-  typeDefs,
-  resolvers
+	typeDefs,
+	resolvers
 });
 
 module.exports = server;

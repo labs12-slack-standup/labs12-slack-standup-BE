@@ -3,8 +3,8 @@ const { gql } = require('apollo-server');
 module.exports = gql`
 	type Query {
 		info: String!
-		users: [User!]!
-		user(id: ID!): User!
+		Users: [User!]!
+		User(id: ID!): User!
 	}
 
 	type User {
