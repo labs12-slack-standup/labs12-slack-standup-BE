@@ -13,7 +13,10 @@ const GRAPHQL_PLAYGROUND_CONFIG = {
 };
 
 const server = new ApolloServer({
-	playground: process.env.NODE_ENV !== 'production',
+	playground:
+		process.env.NODE_ENV !== 'production'
+			? true
+			: GRAPHQL_PLAYGROUND_CONFIG,
 	typeDefs,
 	resolvers
 });
