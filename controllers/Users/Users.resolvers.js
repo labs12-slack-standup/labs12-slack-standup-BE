@@ -5,7 +5,8 @@ module.exports = {
 	Users,
 	User,
 	UsersByRoles,
-	UsersByTeam
+	UsersByTeam,
+	UserByEmail
 };
 
 function Users(parent, args, ctx, info) {
@@ -24,4 +25,10 @@ function UsersByRoles(parent, { roles }, ctx, info) {
 function UsersByTeam(parent, { teamId }, ctx, info) {
 	const users = UsersModel.findByTeam(teamId);
 	return users;
+}
+
+async function UserByEmail(parent, { email }, ctx, info) {
+	const [user] = await db('users').where({ email });
+	console.log(user);
+	return user;
 }

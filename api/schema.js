@@ -7,6 +7,7 @@ module.exports = gql`
 		User(id: ID!): User!
 		UsersByRoles(roles: String!): [User!]!
 		UsersByTeam(teamId: String!): [User!]!
+		UserByEmail(email: String!): User!
 	}
 
 	type User {
