@@ -3,16 +3,6 @@ const jwt = require('jsonwebtoken');
 const typeDefs = require('./schema.js');
 const resolvers = require('./resolvers.js');
 
-// const GRAPHQL_PLAYGROUND_CONFIG = {
-// 	folderName: 'Foo',
-// 	settings: {
-// 		'editor.cursorShape': 'line',
-// 		'editor.fontSize': 14,
-// 		'editor.reuseHeaders': true,
-// 		'editor.theme': 'dark'
-// 	}
-// };
-
 // restricted will run an auth token validation on all operations, except SignupUser & LoginUser Mutations which will bypass
 // the check and run straight through to the SignupUser & LoginUser resolver.
 
