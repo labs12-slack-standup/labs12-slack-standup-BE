@@ -25,6 +25,5 @@ async function findByRole(roles) {
 
 async function findByTeam(teamId) {
 	const users = await db('users').where({ teamId });
-	console.log(users);
 	return users;
 }
