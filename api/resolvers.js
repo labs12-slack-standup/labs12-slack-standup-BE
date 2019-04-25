@@ -5,7 +5,7 @@ const {
 	User,
 	UsersByRoles,
 	UsersByTeam,
-  UserByEmail
+	UserByEmail
 } = require('../controllers/Users/Users.resolvers');
 
 // A map of functions which return data for the schema.
