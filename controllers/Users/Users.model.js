@@ -1,4 +1,4 @@
-const db = require('../../data/dbConfig');
+const db = require('../../data/dbconfig');
 
 module.exports = {
 	find,
@@ -25,6 +25,5 @@ async function findByRole(roles) {
 
 async function findByTeam(teamId) {
 	const users = await db('users').where({ teamId });
-	console.log(users);
 	return users;
 }

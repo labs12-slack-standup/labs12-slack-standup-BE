@@ -29,6 +29,5 @@ function UsersByTeam(parent, { teamId }, ctx, info) {
 
 async function UserByEmail(parent, { email }, ctx, info) {
 	const [user] = await db('users').where({ email });
-	console.log(user);
 	return user;
 }
