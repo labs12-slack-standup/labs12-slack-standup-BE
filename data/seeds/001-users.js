@@ -1,15 +1,15 @@
 const uuidv4 = require('uuidv4');
 const moment = require('moment');
 const faker = require('faker');
+const bcrypt = require('bcryptjs');
 
 exports.seed = function(knex) {
 	const userSeeds = num => {
 		const users = [];
 		for (let i = 0; i < num; i++) {
 			users.push({
-				id: uuidv4(),
 				email: faker.internet.email(),
-				password: 'password',
+				password: bcrypt.hashSync('password', 4),
 				created_at: moment().format(),
 				profilePic: '',
 				roles:

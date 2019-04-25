@@ -3,7 +3,8 @@ const db = require('../data/dbconfig');
 module.exports = {
 	add,
 	find,
-	findBy
+	findBy,
+	findById
 };
 
 // Create question
@@ -18,6 +19,11 @@ async function add(question) {
 // Get all questions
 function find() {
 	return db('questions');
+}
+
+// Get question by filter
+function findBy(filter) {
+	return db('reports').where(filter);
 }
 
 // Get question by id
