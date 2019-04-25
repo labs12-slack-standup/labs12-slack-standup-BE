@@ -5,6 +5,8 @@ module.exports = gql`
 		info: String!
 		Users: [User!]!
 		User(id: ID!): User!
+		UsersByRoles(roles: String!): [User!]!
+		UsersByTeam(teamId: String!): [User!]!
 		UserByEmail(email: String!): User!
 	}
 
@@ -17,5 +19,4 @@ module.exports = gql`
 		roles: String!
 		teamId: ID
 	}
-
 `;
