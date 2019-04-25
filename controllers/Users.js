@@ -1,33 +1,19 @@
-const db = require('../../data/dbconfig');
-const UsersModel = require('./Users.model');
+const router = require('express').Router();
+const Users = require('../models/Users');
 
-module.exports = {
-	Users,
-	User,
-	UsersByRoles,
-	UsersByTeam,
-	UserByEmail
-};
+router.get('/', async (req, res) => {
+	try {
+		const users = await Users.find();
+		const message = 'The users were found in the database.';
+		res.status(200).json({ message, users });
+	} catch (error) {
+		res.status(500).json({
+			message:
+				'Sorry, but something went wrong while retrieving the list of users'
+		});
 
-function Users(parent, args, ctx, info) {
-	return UsersModel.find();
-}
+		throw new Error(error);
+	}
+});
 
-function User(parent, { id, email }, ctx, info) {
-	const user = UsersModel.findById(id);
-	return user;
-}
-
-function UsersByRoles(parent, { roles }, ctx, info) {
-	return UsersModel.findBy(roles);
-}
-
-function UsersByTeam(parent, { teamId }, ctx, info) {
-	const users = UsersModel.findByTeam(teamId);
-	return users;
-}
-
-async function UserByEmail(parent, { email }, ctx, info) {
-	const [user] = await db('users').where({ email });
-	return user;
-}
+module.exports = router;
