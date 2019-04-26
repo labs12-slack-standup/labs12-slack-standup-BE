@@ -43,11 +43,10 @@ async function findByTeam(teamId) {
 	return reports;
 }
 
-// Get report by user id
-function findByUserId(userId) {
-	return db('reports')
-		.where({ userId })
-		.first();
+// Get reports by user id
+async function findByUserId(userId) {
+	const reports = await db('reports').where({ userId });
+	return reports;
 }
 
 // Update report
