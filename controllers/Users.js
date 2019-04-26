@@ -16,4 +16,24 @@ router.get('/', async (req, res) => {
 	}
 });
 
+router.get('/:id', async (req, res) => {
+	try {
+		const { id } = req.params;
+
+		const user = await Users.findById(id);
+
+		res.status(200).json({
+			message: 'The user was retrieved successfully',
+			user
+		});
+	} catch (error) {
+		res.status(500).json({
+			message:
+				'Sorry but something went wrong while retrieving the user.'
+		});
+
+		throw new Error(error);
+	}
+});
+
 module.exports = router;
