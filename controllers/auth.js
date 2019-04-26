@@ -2,6 +2,7 @@ const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const Users = require('../models/Users');
 const { generateToken } = require('../helpers/generateToken');
+const admin = require('../config/admin.js');
 
 router.post('/register', async (req, res) => {
 	try {
@@ -53,5 +54,14 @@ router.post('/login', async (req, res) => {
 		throw new Error(error);
 	}
 });
+
+router.post('/firebase', async (req, res) => {
+	console.log(req.body.credential.oauthAccessToken);
+	try {
+
+	} catch (err) {
+
+	}
+})
 
 module.exports = router;
