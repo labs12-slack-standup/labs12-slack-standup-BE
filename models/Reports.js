@@ -42,6 +42,13 @@ async function findByTeam(teamId) {
 	return reports;
 }
 
+// Get report by user id
+function findByUserId(userId) {
+	return db('reports')
+		.where({ userId })
+		.first();
+}
+
 // Update report
 async function update(id, report) {
 	await db('reports')

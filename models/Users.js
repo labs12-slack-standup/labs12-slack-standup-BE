@@ -7,6 +7,7 @@ module.exports = {
 	findByRole,
 	findById,
 	findByTeam,
+	findByEmail,
 	update,
 	remove
 };
@@ -29,6 +30,14 @@ function find() {
 function findById(id) {
 	return db('users')
 		.where({ id })
+		.first();
+}
+
+// Get user by email
+
+function findByEmail(email) {
+	return db('users')
+		.where({ email })
 		.first();
 }
 
