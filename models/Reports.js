@@ -6,6 +6,7 @@ module.exports = {
 	findBy,
 	findById,
 	findByTeam,
+	findByUserId,
 	update,
 	remove
 };
@@ -39,6 +40,12 @@ function findBy(filter) {
 // Get report by team id
 async function findByTeam(teamId) {
 	const reports = await db('reports').where({ teamId });
+	return reports;
+}
+
+// Get reports by user id
+async function findByUserId(userId) {
+	const reports = await db('reports').where({ userId });
 	return reports;
 }
 
