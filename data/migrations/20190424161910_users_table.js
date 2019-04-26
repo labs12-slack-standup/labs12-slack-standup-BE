@@ -1,12 +1,12 @@
 exports.up = function(knex) {
 	return knex.schema.createTable('users', tbl => {
-		tbl.uuid('id').primary();
+		tbl.increments();
 
 		tbl.string('email', 128)
 			.notNullable()
 			.unique();
 
-		tbl.string('password', 128).notNullable();
+		tbl.string('password', 128);
 
 		tbl.string('created_at').notNullable();
 
@@ -14,7 +14,7 @@ exports.up = function(knex) {
 
 		tbl.string('roles').notNullable();
 
-		tbl.string('teamId');
+		tbl.string('teamId').notNullable();
 	});
 };
 
