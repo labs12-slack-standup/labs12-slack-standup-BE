@@ -23,7 +23,7 @@ function find() {
 
 // Get question by filter
 function findBy(filter) {
-	return db('reports').where(filter);
+	return db('questions').where(filter);
 }
 
 // Get question by id
