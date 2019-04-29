@@ -2,17 +2,9 @@ exports.up = function(knex) {
 	return knex.schema.createTable('reports', tbl => {
 		tbl.increments();
 
-		tbl.integer('userId', 128)
-			.unsigned()
-			.notNullable()
-			.references('id')
-			.inTable('users')
-			.onDelete('CASCADE')
-			.onUpdate('CASCADE');
+		tbl.integer('teamId');
 
-		tbl.integer('reportTypeId').notNullable();
-
-		tbl.string('reportName', 128);
+		tbl.string('reportName', 128).notNullable();
 
 		tbl.string('created_at').notNullable();
 
@@ -24,11 +16,9 @@ exports.up = function(knex) {
 
 		tbl.text('message');
 
-		tbl.boolean('reminder')
-			.notNullable()
-			.defaultTo(true);
-
 		tbl.integer('responseTimeLimit');
+
+		tbl.text('questions');
 	});
 };
 
