@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
 	} catch (error) {
 		res.status(500).json({
 			message:
-				'Sorry, but something went wrong while retrieving the list of users'
+				'Sorry but something went wrong while retrieving the list of users'
 		});
 
 		throw new Error(error);
@@ -21,7 +21,6 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
 	try {
 		const { id } = req.params;
-
 		const user = await Users.findById(id);
 
 		if (user) {
