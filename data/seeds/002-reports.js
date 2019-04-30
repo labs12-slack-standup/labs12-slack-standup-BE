@@ -16,7 +16,7 @@ exports.seed = function(knex) {
 				'Sunday'
 			]),
 			scheduleTime: moment().format(),
-			reoccurring: '1week',
+			recurring: '1week',
 			message: 'Please fill out the report',
 			responseTimeLimit: 600,
 			questions: JSON.stringify([
@@ -50,7 +50,7 @@ exports.seed = function(knex) {
 				'Sunday'
 			]),
 			scheduleTime: moment().format(),
-			reoccurring: '1week',
+			recurring: '1week',
 			message: 'Please fill out the report',
 			responseTimeLimit: 600,
 			questions: JSON.stringify([
@@ -84,7 +84,7 @@ exports.seed = function(knex) {
 				'Sunday'
 			]),
 			scheduleTime: moment().format(),
-			reoccurring: '1week',
+			recurring: '1week',
 			message: 'Please fill out the report',
 			responseTimeLimit: 600,
 			questions: JSON.stringify([
@@ -118,7 +118,7 @@ exports.seed = function(knex) {
 				'Sunday'
 			]),
 			scheduleTime: moment().format(),
-			reoccurring: '1week',
+			recurring: '1week',
 			message: 'Please fill out the report',
 			responseTimeLimit: 600,
 			questions: JSON.stringify([
@@ -152,7 +152,7 @@ exports.seed = function(knex) {
 				'Sunday'
 			]),
 			scheduleTime: moment().format(),
-			reoccurring: '1week',
+			recurring: '1week',
 			message: 'Please fill out the report',
 			responseTimeLimit: 600,
 			questions: JSON.stringify([

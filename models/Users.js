@@ -5,6 +5,7 @@ module.exports = {
 	find,
 	findBy,
 	findByRole,
+	findByJoinCode,
 	findById,
 	findByTeam,
 	findByEmail,
@@ -36,9 +37,7 @@ function findById(id) {
 // Get user by email
 
 function findByEmail(email) {
-	return db('users')
-		.where({ email });
-
+	return db('users').where({ email });
 }
 
 // Get user by filter
@@ -50,6 +49,14 @@ function findBy(filter) {
 async function findByRole(roles) {
 	const users = await db('users').where({ roles });
 	return users;
+}
+
+// Get user by joinCode
+async function findByJoinCode(joinCode) {
+	const { teamId } = await db('users')
+		.where({ joinCode })
+		.first();
+	return teamId;
 }
 
 // Get user by team id
