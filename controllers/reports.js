@@ -4,24 +4,25 @@ const Reports = require('../models/Reports');
 router.get('/', async (req, res) => {
 	try {
 		const reports = await Reports.find();
-		const message = 'The reports were found in the database.';
+		let message = 'The reports were found in the database.';
 		res.status(200).json({ message, reports });
 	} catch (error) {
 		res.status(500).json({
 			message:
-				'Sorry, but something went wrong while retrieving the list of reports'
+				'Sorry but something went wrong while retrieving the list of reports'
 		});
 
 		throw new Error(error);
 	}
 });
 
-router.get('/user/:id', async (req, res) => {
-	const { id } = req.params;
+router.get('/team/:teamId', async (req, res) => {
+	const { teamId } = req.params;
 	try {
-		const reports = await Reports.findByUserId(id);
+		const reports = await Reports.findByTeam(teamId);
+		console.log(reports);
 		if (reports.length === 0) {
-			const message =
+			let message =
 				'No reports by that user were found in the database';
 			res.status(404).json({ message });
 		} else {
@@ -32,7 +33,7 @@ router.get('/user/:id', async (req, res) => {
 	} catch (error) {
 		res.status(500).json({
 			message:
-				'Sorry, but something went wrong while retrieving the list of reports'
+				'Sorry but something went wrong while retrieving the list of reports'
 		});
 
 		//sentry call

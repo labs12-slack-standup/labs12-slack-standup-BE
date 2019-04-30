@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
 	} catch (error) {
 		res.status(500).json({
 			message:
-				'Sorry, but something went wrong while retrieving the list of users'
+				'Sorry but something went wrong while retrieving the list of users'
 		});
 
 		throw new Error(error);
@@ -30,6 +30,26 @@ router.get('/:id', async (req, res) => {
 		res.status(500).json({
 			message:
 				'Sorry but something went wrong while retrieving the user.'
+		});
+
+		throw new Error(error);
+	}
+});
+
+router.get('/team/:teamId', async (req, res) => {
+	const { teamId } = req.params;
+
+	try {
+		const users = await Users.findByTeam(teamId);
+
+		res.status(200).json({
+			message: `The users for team ${teamId} were found successfully.`,
+			users
+		});
+	} catch (error) {
+		res.status(500).json({
+			message:
+				'Sorry but something went wrong while retrieving the users for this team.'
 		});
 
 		throw new Error(error);
