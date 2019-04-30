@@ -1,198 +1,176 @@
-const uuidv4 = require('uuidv4');
 const moment = require('moment');
-const faker = require('faker');
 
 exports.seed = function(knex) {
-	const reportSeeds = num => {
-		const reports = [];
-		for (let i = 0; i < num; i++) {
-			reports.push({
-				userId: 1,
-				reportTypeId: 1,
-				reportName: 'Daily Standup',
-				created_at: moment().format(),
-				schedule: JSON.stringify([
-					'Monday',
-					'Tuesday',
-					'Wednesday',
-					'Thursday',
-					'Friday',
-					'Saturday',
-					'Sunday'
-				]),
-				scheduleTime: moment().format(),
-				reoccurring: '1week',
-				message: 'Please fill out the report',
-				reminder: true,
-				responseTimeLimit: 600
-			});
+	return knex('reports').insert([
+		{
+			teamId: 1,
+			reportName: 'Daily Standup',
+			created_at: moment().format(),
+			schedule: JSON.stringify([
+				'Monday',
+				'Tuesday',
+				'Wednesday',
+				'Thursday',
+				'Friday',
+				'Saturday',
+				'Sunday'
+			]),
+			scheduleTime: moment().format(),
+			reoccurring: '1week',
+			message: 'Please fill out the report',
+			responseTimeLimit: 600,
+			questions: JSON.stringify([
+				{
+					question: 'How do you feel today?'
+				},
+				{
+					question: 'What did you get done today?'
+				},
+				{
+					question:
+						'Did you finish your goals for today?'
+				},
+				{
+					question:
+						'What will you work on tomorrow?'
+				}
+			])
+		},
+		{
+			teamId: 2,
+			reportName: 'Daily Standup',
+			created_at: moment().format(),
+			schedule: JSON.stringify([
+				'Monday',
+				'Tuesday',
+				'Wednesday',
+				'Thursday',
+				'Friday',
+				'Saturday',
+				'Sunday'
+			]),
+			scheduleTime: moment().format(),
+			reoccurring: '1week',
+			message: 'Please fill out the report',
+			responseTimeLimit: 600,
+			questions: JSON.stringify([
+				{
+					question: 'How do you feel today?'
+				},
+				{
+					question: 'What did you get done today?'
+				},
+				{
+					question:
+						'Did you finish your goals for today?'
+				},
+				{
+					question:
+						'What will you work on tomorrow?'
+				}
+			])
+		},
+		{
+			teamId: 3,
+			reportName: 'Daily Standup',
+			created_at: moment().format(),
+			schedule: JSON.stringify([
+				'Monday',
+				'Tuesday',
+				'Wednesday',
+				'Thursday',
+				'Friday',
+				'Saturday',
+				'Sunday'
+			]),
+			scheduleTime: moment().format(),
+			reoccurring: '1week',
+			message: 'Please fill out the report',
+			responseTimeLimit: 600,
+			questions: JSON.stringify([
+				{
+					question: 'How do you feel today?'
+				},
+				{
+					question: 'What did you get done today?'
+				},
+				{
+					question:
+						'Did you finish your goals for today?'
+				},
+				{
+					question:
+						'What will you work on tomorrow?'
+				}
+			])
+		},
+		{
+			teamId: 4,
+			reportName: 'Daily Standup',
+			created_at: moment().format(),
+			schedule: JSON.stringify([
+				'Monday',
+				'Tuesday',
+				'Wednesday',
+				'Thursday',
+				'Friday',
+				'Saturday',
+				'Sunday'
+			]),
+			scheduleTime: moment().format(),
+			reoccurring: '1week',
+			message: 'Please fill out the report',
+			responseTimeLimit: 600,
+			questions: JSON.stringify([
+				{
+					question: 'How do you feel today?'
+				},
+				{
+					question: 'What did you get done today?'
+				},
+				{
+					question:
+						'Did you finish your goals for today?'
+				},
+				{
+					question:
+						'What will you work on tomorrow?'
+				}
+			])
+		},
+		{
+			teamId: 5,
+			reportName: 'Daily Standup',
+			created_at: moment().format(),
+			schedule: JSON.stringify([
+				'Monday',
+				'Tuesday',
+				'Wednesday',
+				'Thursday',
+				'Friday',
+				'Saturday',
+				'Sunday'
+			]),
+			scheduleTime: moment().format(),
+			reoccurring: '1week',
+			message: 'Please fill out the report',
+			responseTimeLimit: 600,
+			questions: JSON.stringify([
+				{
+					question: 'How do you feel today?'
+				},
+				{
+					question: 'What did you get done today?'
+				},
+				{
+					question:
+						'Did you finish your goals for today?'
+				},
+				{
+					question:
+						'What will you work on tomorrow?'
+				}
+			])
 		}
-		return reports;
-	};
-	return knex('reports').insert(reportSeeds(100));
+	]);
 };
-
-// exports.seed = function(knex) {
-// 	return knex('reports').insert([
-// 		{
-// 			userId: 1,
-// 			reportTypeId: 1,
-// 			reportName: 'Daily Standup',
-// 			created_at: moment().format(),
-// 			schedule: JSON.stringify([
-// 				'Monday',
-// 				'Tuesday',
-// 				'Wednesday',
-// 				'Thursday',
-// 				'Friday',
-// 				'Saturday',
-// 				'Sunday'
-// 			]),
-// 			scheduleTime: moment().format(),
-// 			reoccurring: '1week',
-// 			message: 'Please fill out the report',
-// 			reminder: true,
-// 			responseTimeLimit: 600
-// 		},
-// 		{
-// 			userId: 2,
-// 			reportTypeId: 1,
-// 			reportName: 'Daily Standup',
-// 			created_at: moment().format(),
-// 			schedule: JSON.stringify([
-// 				'Monday',
-// 				'Tuesday',
-// 				'Wednesday',
-// 				'Thursday',
-// 				'Friday',
-// 				'Saturday',
-// 				'Sunday'
-// 			]),
-// 			scheduleTime: moment().format(),
-// 			reoccurring: '1week',
-// 			message: 'Please fill out the report',
-// 			reminder: true,
-// 			responseTimeLimit: 600
-// 		},
-// 		{
-// 			userId: 3,
-// 			reportTypeId: 1,
-// 			reportName: 'Daily Standup',
-// 			created_at: moment().format(),
-// 			schedule: JSON.stringify([
-// 				'Monday',
-// 				'Tuesday',
-// 				'Wednesday',
-// 				'Thursday',
-// 				'Friday',
-// 				'Saturday',
-// 				'Sunday'
-// 			]),
-// 			scheduleTime: moment().format(),
-// 			reoccurring: '1week',
-// 			message: 'Please fill out the report',
-// 			reminder: true,
-// 			responseTimeLimit: 600
-// 		},
-// 		{
-// 			userId: 4,
-// 			reportTypeId: 1,
-// 			reportName: 'Daily Standup',
-// 			created_at: moment().format(),
-// 			schedule: JSON.stringify([
-// 				'Monday',
-// 				'Tuesday',
-// 				'Wednesday',
-// 				'Thursday',
-// 				'Friday',
-// 				'Saturday',
-// 				'Sunday'
-// 			]),
-// 			scheduleTime: moment().format(),
-// 			reoccurring: '1week',
-// 			message: 'Please fill out the report',
-// 			reminder: true,
-// 			responseTimeLimit: 600
-// 		},
-// 		{
-// 			userId: 5,
-// 			reportTypeId: 1,
-// 			reportName: 'Daily Standup',
-// 			created_at: moment().format(),
-// 			schedule: JSON.stringify([
-// 				'Monday',
-// 				'Tuesday',
-// 				'Wednesday',
-// 				'Thursday',
-// 				'Friday',
-// 				'Saturday',
-// 				'Sunday'
-// 			]),
-// 			scheduleTime: moment().format(),
-// 			reoccurring: '1week',
-// 			message: 'Please fill out the report',
-// 			reminder: true,
-// 			responseTimeLimit: 600
-// 		},
-// 		{
-// 			userId: 6,
-// 			reportTypeId: 1,
-// 			reportName: 'Daily Standup',
-// 			created_at: moment().format(),
-// 			schedule: JSON.stringify([
-// 				'Monday',
-// 				'Tuesday',
-// 				'Wednesday',
-// 				'Thursday',
-// 				'Friday',
-// 				'Saturday',
-// 				'Sunday'
-// 			]),
-// 			scheduleTime: moment().format(),
-// 			reoccurring: '1week',
-// 			message: 'Please fill out the report',
-// 			reminder: true,
-// 			responseTimeLimit: 600
-// 		},
-// 		{
-// 			userId: 7,
-// 			reportTypeId: 1,
-// 			reportName: 'Daily Standup',
-// 			created_at: moment().format(),
-// 			schedule: JSON.stringify([
-// 				'Monday',
-// 				'Tuesday',
-// 				'Wednesday',
-// 				'Thursday',
-// 				'Friday',
-// 				'Saturday',
-// 				'Sunday'
-// 			]),
-// 			scheduleTime: moment().format(),
-// 			reoccurring: '1week',
-// 			message: 'Please fill out the report',
-// 			reminder: true,
-// 			responseTimeLimit: 600
-// 		},
-// 		{
-// 			userId: 8,
-// 			reportTypeId: 1,
-// 			reportName: 'Daily Standup',
-// 			created_at: moment().format(),
-// 			schedule: JSON.stringify([
-// 				'Monday',
-// 				'Tuesday',
-// 				'Wednesday',
-// 				'Thursday',
-// 				'Friday',
-// 				'Saturday',
-// 				'Sunday'
-// 			]),
-// 			scheduleTime: moment().format(),
-// 			reoccurring: '1week',
-// 			message: 'Please fill out the report',
-// 			reminder: true,
-// 			responseTimeLimit: 600
-// 		}
-// 	]);
-// };
