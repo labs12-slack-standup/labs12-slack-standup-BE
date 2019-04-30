@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const Users = require('../models/Users');
+const moment = require('moment');
 const { generateToken } = require('../helpers/generateToken');
 const admin = require('firebase-admin');
 
@@ -73,26 +74,33 @@ const config = {
 
 admin.initializeApp({ credential: admin.credential.cert(config) });
 
-// This is a test route for the firebase server side verification
-// this currently verifies the initial authenticity of a user when
-// they authorize login frrom GitHub, this route must first be refactored to
-// 1. Check if the user email is in the User Model
-// 2. if user then user = loggedIn, sign and return token
-// 3. if !user then inser user into User Model, sign and return token
-
 router.post('/firebase', async ({ body }, res) => {
-	const token = body.stsTokenManager.accessToken;
+	// deconstruct access token
+	const { accessToken } = body.stsTokenManager;
 	try {
-		const result = await admin.auth().verifyIdToken(token);
-		console.log(result);
-		res.status(200).json({ message: 'success' }); // Temporary response to the client.
+		// verify access token with Firebase admin.
+		const { email, name: fullName, picture: profilePic } = await admin.auth().verifyIdToken(accessToken);
+		// desconstructed variables form the userObj to be inserted into Users Model
+		const userObj = { email, fullName,  roles: 'admin', profilePic, created_at: moment().format() }
+		
+		// First we check if the email belongs to an exisitng user
+		const [existingUser] = await Users.findBy({ email });
+		// If true we generate a token and return it back to the client
+		if (existingUser) {
+			const token = await generateToken(existingUser);
+			return res.status(201).json(token);
+		// If false we add the userObj to the User Model
+		} else {
+			const [id] = await Users.add(userObj);
+			// When the resource has been created we deconstruct the Id and query the database for the User
+			const user = await Users.findById(id);
+			// When the user has been returned we generate a token and return it back to the client
+			const token = await generateToken(user);
+			return res.status(201).json(token);
+		}
 	} catch (error) {
-		res.status(500).json({
-			message:
-				'Sorry but there was an error in authenticating.'
-		});
-
-		throw new Error(error);
+		console.log(error);
+		res.status(500).json({ message: 'Error authenticating user' });
 	}
 });
 
