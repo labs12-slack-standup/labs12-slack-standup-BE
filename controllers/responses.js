@@ -15,6 +15,7 @@ router.get('/', async (req, res) => {
 		throw new Error(error);
 	}
 });
+// gets all reponses by report
 router.get('/:reportId', async (req, res) => {
 	const { reportId } = req.params;
 	try {
@@ -23,7 +24,7 @@ router.get('/:reportId', async (req, res) => {
 			res.status(404).json({ Message: 'no responses found' });
 		} else {
 			res.status(200).json({
-				Message: 'Responses found in database',
+				message: 'Responses found in database',
 				responses
 			});
 		}

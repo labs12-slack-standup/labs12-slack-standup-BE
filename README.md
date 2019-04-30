@@ -57,15 +57,15 @@ yarn server
      - [Register User](#register)
 - [User Routes](#user-routes)
      - [Get Users](#get-users)
-         - [Get User By Id](#get-user-by-id)
-         - [Get Users By TeamId](#get-users-by-teamid)
+          - [Get User By Id](#get-user-by-id)
+          - [Get Users By TeamId](#get-users-by-teamid)
 - [Report Routes](#report-routes)
      - [Get Reports](#get-reports)
-         - [Get All Reports](#get-all-reports)
-         - [Get Report By TeamId](#get-reports-by-teamid)
+          - [Get All Reports](#get-all-reports)
+          - [Get Report By TeamId](#get-reports-by-teamid)
 - [Reponse Routes](#response-routes)
-    - [Get Responses](#get-responses)
-        - [Get All Responses](#get-all-responses)
+     - [Get Responses](#get-responses)
+          - [Get All Responses](#get-all-responses)
 
 # AUTH ROUTES
 
@@ -77,7 +77,7 @@ yarn server
 
 ## **GET USERS**
 
-### ***GET ALL USERS***
+### **_GET ALL USERS_**
 
 _Method Url:_ `/api/users`
 
@@ -151,7 +151,7 @@ _example:_
 }
 ```
 
-### ***Get User By Id***
+### **_Get User By Id_**
 
 _Method Url:_ `/api/users/:id`
 
@@ -213,7 +213,7 @@ _example:_
 }
 ```
 
-### ***Get Users By TeamId***
+### **_Get Users By TeamId_**
 
 _Method Url:_ `/api/users/team/:teamId`
 
@@ -325,7 +325,7 @@ _example:_
 
 ## **GET REPORTS**
 
-### ***GET ALL REPORTS***
+### **_GET ALL REPORTS_**
 
 _Method Url:_ `/api/reports`
 
@@ -426,7 +426,7 @@ _example:_
 }
 ```
 
-### ***Get Reports By TeamId***
+### **_Get Reports By TeamId_**
 
 _Method Url:_ `/api/reports/team/:teamId`
 
@@ -491,11 +491,64 @@ _example:_
 }
 ```
 
+## **DELETE REPORTS**
+
+### **_Delete Report By ReportId_**
+
+_Method Url:_ `/api/reports/:id`
+
+_HTTP method:_ **[DELETE]**
+
+#### Headers
+
+| name            | type   | required | description              |
+| --------------- | ------ | -------- | ------------------------ |
+| `Content-Type`  | String | Yes      | Must be application/json |
+| `Authorization` | String | Yes      | JSON Web Token           |
+
+#### Response
+
+##### 200 (OK)
+
+> If the reports are found in the database, the endpoint will return an HTTP response with a status code `200` and a body as below.
+
+_example:_
+
+```
+{
+    "message": "The report was successfully deleted.",
+}
+```
+
+#### 404 (Not Found)
+
+> If the provided `teamId` doesn't belong to a user, the endpoint will return an HTTP response with a status code `404` and a body as below.
+
+_example:_
+
+```
+{
+  "message": "This report does not exist."
+}
+```
+
+#### 500 (Internal Server Error)
+
+> If there is a server or database error, the endpoint will return an HTTP response with a status code `500` and a body as below.
+
+_example:_
+
+```
+{
+    "message": 'Sorry, something went wrong while deleting the report'
+}
+```
+
 # RESPONSE ROUTES
 
 ## **GET REPONSES**
 
-### ***GET ALL RESPONSES***
+### **_GET ALL RESPONSES_**
 
 _Method Url:_ `/api/responses`
 
@@ -578,5 +631,91 @@ _example:_
 ```
 {
   "message": "Sorry but something went wrong while retrieving the list of responses."
+}
+```
+
+### **_GET RESPONSES BY REPORT_**
+
+_Method Url:_ `/api/responses/:reportId`
+
+_HTTP method:_ **[GET]**
+
+#### Headers
+
+| name            | type   | required | description              |
+| --------------- | ------ | -------- | ------------------------ |
+| `Content-Type`  | String | Yes      | Must be application/json |
+| `Authorization` | String | Yes      | JSON Web Token           |
+
+#### Response
+
+##### 200 (OK)
+
+> If the responses are found in the database, the endpoint will return an HTTP response with a status code `200` and a body as below.
+
+_example:_
+
+```
+{
+    "Message": "Responses found in database",
+    "responses": [
+        {
+            "id": 1,
+            "reportId": 1,
+            "userId": 2,
+            "question": "How do you feel today?",
+            "answer": "I feel happy today",
+            "created_at": "2019-04-30T17:36:55-04:00",
+            "submitted_date": "2019-04-30T17:36:55-04:00"
+        },
+        {
+            "id": 2,
+            "reportId": 1,
+            "userId": 2,
+            "question": "What did you get done today?",
+            "answer": "I made a log in component.",
+            "created_at": "2019-04-30T17:36:55-04:00",
+            "submitted_date": "2019-04-30T17:36:55-04:00"
+        },
+        {
+            "id": 3,
+            "reportId": 1,
+            "userId": 2,
+            "question": "Did you finish your goals for today?",
+            "answer": "Yes",
+            "created_at": "2019-04-30T17:36:55-04:00",
+            "submitted_date": "2019-04-30T17:36:55-04:00"
+        },
+        {
+            "id": 4,
+            "reportId": 1,
+            "userId": 2,
+            "question": "What will you work on tomorrow?",
+            "answer": "Integrating OAuth",
+            "created_at": "2019-04-30T17:36:55-04:00",
+            "submitted_date": "2019-04-30T17:36:55-04:00"
+        },
+        {
+            "id": 5,
+            "reportId": 1,
+            "userId": 3,
+            "question": "How do you feel today?",
+            "answer": "I feel happy today",
+            "created_at": "2019-04-30T17:36:55-04:00",
+            "submitted_date": "2019-04-30T17:36:55-04:00"
+        },
+    ]
+```
+
+#### 500 (Internal Server Error)
+
+> If there is a server or database error, the endpoint will return an HTTP response with a status code `500` and a body as below.
+
+_example:_
+
+```
+{
+  "message": 'Sorry but something went wrong while retrieving the list of responses by team.'
+
 }
 ```
