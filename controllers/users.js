@@ -24,10 +24,17 @@ router.get('/:id', async (req, res) => {
 
 		const user = await Users.findById(id);
 
-		res.status(200).json({
-			message: 'The user was retrieved successfully',
-			user
-		});
+		if (user) {
+			res.status(200).json({
+				message: 'The user was retrieved successfully',
+				user
+			});
+		} else {
+			res.status(404).json({
+				message:
+					'Sorry, the user requested does not exist'
+			});
+		}
 	} catch (error) {
 		res.status(500).json({
 			message:
