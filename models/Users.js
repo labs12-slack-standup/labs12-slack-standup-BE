@@ -36,9 +36,7 @@ function findById(id) {
 // Get user by email
 
 function findByEmail(email) {
-	return db('users')
-		.where({ email });
-
+	return db('users').where({ email });
 }
 
 // Get user by filter
