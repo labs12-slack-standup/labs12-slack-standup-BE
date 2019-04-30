@@ -40,17 +40,16 @@ router.get('/user/:id', async (req, res) => {
 	}
 });
 
-router.delete('/:reportId', async (req, res) => {
-	const { reportId } = req.params;
-	console.log(reportId);
+router.delete('/:id', async (req, res) => {
 	try {
-		const reports = await Reports.remove(reportId);
-		if (!reports) {
+		const { id } = req.params;
+		const count = await Reports.remove(id);
+		if (count === 0) {
 			const message = "This report doesn't exist.";
 			res.status(404).json({ message });
 		} else {
 			const message = 'The report was successfully deleted.';
-			res.status(202).json({ message, id });
+			res.status(202).json({ message });
 		}
 	} catch (error) {
 		res.status(500).json({
