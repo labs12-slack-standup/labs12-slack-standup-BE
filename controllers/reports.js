@@ -41,4 +41,23 @@ router.get('/team/:teamId', async (req, res) => {
 	}
 });
 
+router.delete('/:id', async (req, res) => {
+	try {
+		const { id } = req.params;
+		const count = await Reports.remove(id);
+		if (count === 0) {
+			const message = "This report doesn't exist.";
+			res.status(404).json({ message });
+		} else {
+			const message = 'The report was successfully deleted.';
+			res.status(202).json({ message });
+		}
+	} catch (error) {
+		res.status(500).json({
+			message:
+				'Sorry, something went wrong while deleting the report'
+		});
+	}
+});
+
 module.exports = router;
