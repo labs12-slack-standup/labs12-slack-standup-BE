@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
 	} catch (error) {
 		res.status(500).json({
 			message:
-				'Sorry but something went wrong while retrieving the list of users'
+				'Sorry, but something went wrong while retrieving the list of users'
 		});
 
 		throw new Error(error);
@@ -21,19 +21,13 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
 	try {
 		const { id } = req.params;
+
 		const user = await Users.findById(id);
 
-		if (user) {
-			res.status(200).json({
-				message: 'The user was retrieved successfully',
-				user
-			});
-		} else {
-			res.status(404).json({
-				message:
-					'Sorry, the user requested does not exist'
-			});
-		}
+		res.status(200).json({
+			message: 'The user was retrieved successfully',
+			user
+		});
 	} catch (error) {
 		res.status(500).json({
 			message:
@@ -113,5 +107,7 @@ router.delete('/:id', async (req, res) => {
 		res.status(500).json({
 			message: 'Sorry, there was an error deleting the user.'
 		});
+	}
+});
 
 module.exports = router;

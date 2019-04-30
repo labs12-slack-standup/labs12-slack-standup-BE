@@ -491,8 +491,6 @@ _example:_
 }
 ```
 
-
-
 ## **DELETE REPORTS**
 
 ### **_Delete Report By ReportId_**
@@ -633,5 +631,91 @@ _example:_
 ```
 {
   "message": "Sorry but something went wrong while retrieving the list of responses."
+}
+```
+
+### **_GET RESPONSES BY REPORT_**
+
+_Method Url:_ `/api/responses/:reportId`
+
+_HTTP method:_ **[GET]**
+
+#### Headers
+
+| name            | type   | required | description              |
+| --------------- | ------ | -------- | ------------------------ |
+| `Content-Type`  | String | Yes      | Must be application/json |
+| `Authorization` | String | Yes      | JSON Web Token           |
+
+#### Response
+
+##### 200 (OK)
+
+> If the responses are found in the database, the endpoint will return an HTTP response with a status code `200` and a body as below.
+
+_example:_
+
+```
+{
+    "Message": "Responses found in database",
+    "responses": [
+        {
+            "id": 1,
+            "reportId": 1,
+            "userId": 2,
+            "question": "How do you feel today?",
+            "answer": "I feel happy today",
+            "created_at": "2019-04-30T17:36:55-04:00",
+            "submitted_date": "2019-04-30T17:36:55-04:00"
+        },
+        {
+            "id": 2,
+            "reportId": 1,
+            "userId": 2,
+            "question": "What did you get done today?",
+            "answer": "I made a log in component.",
+            "created_at": "2019-04-30T17:36:55-04:00",
+            "submitted_date": "2019-04-30T17:36:55-04:00"
+        },
+        {
+            "id": 3,
+            "reportId": 1,
+            "userId": 2,
+            "question": "Did you finish your goals for today?",
+            "answer": "Yes",
+            "created_at": "2019-04-30T17:36:55-04:00",
+            "submitted_date": "2019-04-30T17:36:55-04:00"
+        },
+        {
+            "id": 4,
+            "reportId": 1,
+            "userId": 2,
+            "question": "What will you work on tomorrow?",
+            "answer": "Integrating OAuth",
+            "created_at": "2019-04-30T17:36:55-04:00",
+            "submitted_date": "2019-04-30T17:36:55-04:00"
+        },
+        {
+            "id": 5,
+            "reportId": 1,
+            "userId": 3,
+            "question": "How do you feel today?",
+            "answer": "I feel happy today",
+            "created_at": "2019-04-30T17:36:55-04:00",
+            "submitted_date": "2019-04-30T17:36:55-04:00"
+        },
+    ]
+```
+
+#### 500 (Internal Server Error)
+
+> If there is a server or database error, the endpoint will return an HTTP response with a status code `500` and a body as below.
+
+_example:_
+
+```
+{
+  "message": 'Sorry but something went wrong while retrieving the list of responses by team.'
+
 }
 ```
