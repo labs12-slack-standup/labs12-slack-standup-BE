@@ -57,15 +57,15 @@ yarn server
      - [Register User](#register)
 - [User Routes](#user-routes)
      - [Get Users](#get-users)
-         - [Get User By Id](#get-user-by-id)
-         - [Get Users By TeamId](#get-users-by-teamid)
+          - [Get User By Id](#get-user-by-id)
+          - [Get Users By TeamId](#get-users-by-teamid)
 - [Report Routes](#report-routes)
      - [Get Reports](#get-reports)
-         - [Get All Reports](#get-all-reports)
-         - [Get Report By TeamId](#get-reports-by-teamid)
+          - [Get All Reports](#get-all-reports)
+          - [Get Report By TeamId](#get-reports-by-teamid)
 - [Reponse Routes](#response-routes)
-    - [Get Responses](#get-responses)
-        - [Get All Responses](#get-all-responses)
+     - [Get Responses](#get-responses)
+          - [Get All Responses](#get-all-responses)
 
 # AUTH ROUTES
 
@@ -77,7 +77,7 @@ yarn server
 
 ## **GET USERS**
 
-### ***GET ALL USERS***
+### **_GET ALL USERS_**
 
 _Method Url:_ `/api/users`
 
@@ -151,7 +151,7 @@ _example:_
 }
 ```
 
-### ***Get User By Id***
+### **_Get User By Id_**
 
 _Method Url:_ `/api/users/:id`
 
@@ -213,7 +213,7 @@ _example:_
 }
 ```
 
-### ***Get Users By TeamId***
+### **_Get Users By TeamId_**
 
 _Method Url:_ `/api/users/team/:teamId`
 
@@ -325,7 +325,7 @@ _example:_
 
 ## **GET REPORTS**
 
-### ***GET ALL REPORTS***
+### **_GET ALL REPORTS_**
 
 _Method Url:_ `/api/reports`
 
@@ -426,7 +426,7 @@ _example:_
 }
 ```
 
-### ***Get Reports By TeamId***
+### **_Get Reports By TeamId_**
 
 _Method Url:_ `/api/reports/team/:teamId`
 
@@ -491,11 +491,66 @@ _example:_
 }
 ```
 
+
+
+## **DELETE REPORTS**
+
+### **_Delete Report By ReportId_**
+
+_Method Url:_ `/api/reports/:id`
+
+_HTTP method:_ **[DELETE]**
+
+#### Headers
+
+| name            | type   | required | description              |
+| --------------- | ------ | -------- | ------------------------ |
+| `Content-Type`  | String | Yes      | Must be application/json |
+| `Authorization` | String | Yes      | JSON Web Token           |
+
+#### Response
+
+##### 200 (OK)
+
+> If the reports are found in the database, the endpoint will return an HTTP response with a status code `200` and a body as below.
+
+_example:_
+
+```
+{
+    "message": "The report was successfully deleted.",
+}
+```
+
+#### 404 (Not Found)
+
+> If the provided `teamId` doesn't belong to a user, the endpoint will return an HTTP response with a status code `404` and a body as below.
+
+_example:_
+
+```
+{
+  "message": "This report does not exist."
+}
+```
+
+#### 500 (Internal Server Error)
+
+> If there is a server or database error, the endpoint will return an HTTP response with a status code `500` and a body as below.
+
+_example:_
+
+```
+{
+    "message": 'Sorry, something went wrong while deleting the report'
+}
+```
+
 # RESPONSE ROUTES
 
 ## **GET REPONSES**
 
-### ***GET ALL RESPONSES***
+### **_GET ALL RESPONSES_**
 
 _Method Url:_ `/api/responses`
 
