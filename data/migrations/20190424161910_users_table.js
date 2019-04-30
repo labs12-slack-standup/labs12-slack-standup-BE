@@ -18,6 +18,10 @@ exports.up = function(knex) {
 
 		tbl.string('created_at').notNullable();
 
+		tbl.string('timezone').notNullable();
+
+		tbl.string('joinCode');
+
 		tbl.boolean('active')
 			.defaultTo(true)
 			.notNullable();

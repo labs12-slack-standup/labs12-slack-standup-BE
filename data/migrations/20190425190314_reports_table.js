@@ -12,7 +12,7 @@ exports.up = function(knex) {
 
 		tbl.string('scheduleTime');
 
-		tbl.string('reoccurring', 128);
+		tbl.string('recurring', 128);
 
 		tbl.text('message');
 

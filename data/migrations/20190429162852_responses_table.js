@@ -22,8 +22,6 @@ exports.up = function(knex) {
 
 		tbl.string('answer', 128);
 
-		tbl.string('created_at').notNullable();
-
 		tbl.string('submitted_date').notNullable();
 	});
 };

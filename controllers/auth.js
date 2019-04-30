@@ -79,17 +79,27 @@ router.post('/firebase', async ({ body }, res) => {
 	const { accessToken } = body.stsTokenManager;
 	try {
 		// verify access token with Firebase admin.
-		const { email, name: fullName, picture: profilePic } = await admin.auth().verifyIdToken(accessToken);
+		const {
+			email,
+			name: fullName,
+			picture: profilePic
+		} = await admin.auth().verifyIdToken(accessToken);
 		// desconstructed variables form the userObj to be inserted into Users Model
-		const userObj = { email, fullName,  roles: 'admin', profilePic, created_at: moment().format() }
-		
+		const userObj = {
+			email,
+			fullName,
+			roles: 'member',
+			profilePic,
+			created_at: moment().format()
+		};
+
 		// First we check if the email belongs to an exisitng user
 		const [existingUser] = await Users.findBy({ email });
 		// If true we generate a token and return it back to the client
 		if (existingUser) {
 			const token = await generateToken(existingUser);
 			return res.status(201).json(token);
-		// If false we add the userObj to the User Model, generate a token and return it back to the client
+			// If false we add the userObj to the User Model, generate a token and return it back to the client
 		} else {
 			const newUser = await Users.add(userObj);
 			const token = await generateToken(newUser);

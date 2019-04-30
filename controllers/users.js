@@ -65,6 +65,26 @@ router.get('/team/:teamId', async (req, res) => {
 	}
 });
 
+// Get teamId by joinCode and update member's teamId to reflect admin's
+router.get('/:id/joinCode/:joinCode', async (req, res) => {
+	const { id, joinCode } = req.params;
+
+	try {
+		const teamId = await Users.findByJoinCode(joinCode);
+		const updated = await Users.update(id, { teamId });
+
+		res.status(202).json({
+			message: 'The user has successfully joined their team.',
+			updated
+		});
+	} catch (error) {
+		res.status(500).json({
+			message:
+				'Sorry but something went wrong while retrieving the team id for this user.'
+		});
+	}
+});
+
 //edit user by ID
 //what properties do we want to be editable?
 router.put('/:id', async (req, res) => {
@@ -113,6 +133,8 @@ router.delete('/:id', async (req, res) => {
 		res.status(500).json({
 			message: 'Sorry, there was an error deleting the user.'
 		});
+
+		throw new Error(error);
 	}
 });
 
