@@ -16,28 +16,6 @@ router.get('/', async (req, res) => {
 	}
 });
 
-router.get('/byemail', async (req, res) => {
-	//need to pull email off of firebase response and figure out where to stick it, headers for now to test
-	try {
-		const { email } = req.headers;
-		const user = await Users.findByEmail(email);
-		if (user.length !== 0) {
-			const message = 'The user was found in the database.';
-			res.status(200).json({ message, user: user[0] });
-		} else {
-			const noUser =
-				'No user with that email exists in the database';
-			res.status(404).json({ Message: noUser });
-		}
-		console.log(user);
-	} catch (error) {
-		res.status(500).json({
-			message:
-				'Sorry, but something wen wrong while retrieving the user'
-		});
-	}
-});
-
 router.get('/:id', async (req, res) => {
 	try {
 		const { id } = req.params;

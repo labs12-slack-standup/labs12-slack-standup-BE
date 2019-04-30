@@ -9,7 +9,7 @@ const errorMiddleware = require('./middleware/errorReporting');
 const authController = require('./controllers/auth');
 const userController = require('./controllers/users');
 const reportController = require('./controllers/reports');
-const questionController = require('./controllers/questions');
+const responseController = require('./controllers/responses');
 
 // initializations
 const server = express();
@@ -24,7 +24,7 @@ middleware(server);
 server.use('/api/auth', authController);
 server.use('/api/users', userController);
 server.use('/api/reports', reportController);
-server.use('/api/questions', questionController);
+server.use('/api/responses', responseController);
 
 // error reporting middleware (Must be after all requests)
 errorMiddleware(server);
