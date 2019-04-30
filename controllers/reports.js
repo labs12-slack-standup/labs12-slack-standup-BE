@@ -60,4 +60,26 @@ router.delete('/:id', async (req, res) => {
 	}
 });
 
+//edit later to pull out specific edit fields from the req.body
+router.put(‘/:reportId’, async (req, res) => {
+	try {
+		const { reportId } = req.params;
+		const editedReport = await Reports.update(reportId, req.body);
+		if(editedReport) {
+			res.status(200).json({
+							message: ‘The report was edited succesfully.’, editedReport
+						});
+		} else {
+			res.status(404).json({ message: ‘The report is not found’})
+		}
+	} catch (error) {
+		console.log(error)
+		res.status(500).json({
+			message:
+				‘Sorry, something went wrong while updating the report’
+		});
+		throw new Error(error);
+	}
+});
+
 module.exports = router;
