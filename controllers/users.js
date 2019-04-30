@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Users = require('../models/Users');
 
+// Get all users
 router.get('/', async (req, res) => {
 	try {
 		const users = await Users.find();
@@ -9,13 +10,14 @@ router.get('/', async (req, res) => {
 	} catch (error) {
 		res.status(500).json({
 			message:
-				'Sorry, but something went wrong while retrieving the list of users'
+				'Sorry but something went wrong while retrieving the list of users'
 		});
 
 		throw new Error(error);
 	}
 });
 
+// Get user by id
 router.get('/:id', async (req, res) => {
 	try {
 		const { id } = req.params;
@@ -36,6 +38,27 @@ router.get('/:id', async (req, res) => {
 		res.status(500).json({
 			message:
 				'Sorry but something went wrong while retrieving the user.'
+		});
+
+		throw new Error(error);
+	}
+});
+
+// Get all users for a team by teamId
+router.get('/team/:teamId', async (req, res) => {
+	const { teamId } = req.params;
+
+	try {
+		const users = await Users.findByTeam(teamId);
+
+		res.status(200).json({
+			message: `The users for team ${teamId} were found successfully.`,
+			users
+		});
+	} catch (error) {
+		res.status(500).json({
+			message:
+				'Sorry but something went wrong while retrieving the users for this team.'
 		});
 
 		throw new Error(error);
@@ -70,7 +93,6 @@ router.put('/:id', async (req, res) => {
 });
 
 //delete user by ID. Not actually sure we'll need this as we may just switch Active to false.
-
 router.delete('/:id', async (req, res) => {
 	try {
 		const { id } = req.params;
@@ -91,8 +113,5 @@ router.delete('/:id', async (req, res) => {
 		res.status(500).json({
 			message: 'Sorry, there was an error deleting the user.'
 		});
-		throw new Error(error);
-	}
-});
 
 module.exports = router;
