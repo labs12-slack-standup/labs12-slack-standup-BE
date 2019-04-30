@@ -41,4 +41,45 @@ router.get('/team/:teamId', async (req, res) => {
 	}
 });
 
+router.delete('/:id', async (req, res) => {
+	try {
+		const { id } = req.params;
+		const count = await Reports.remove(id);
+		if (count === 0) {
+			const message = "This report doesn't exist.";
+			res.status(404).json({ message });
+		} else {
+			const message = 'The report was successfully deleted.';
+			res.status(202).json({ message });
+		}
+	} catch (error) {
+		res.status(500).json({
+			message:
+				'Sorry, something went wrong while deleting the report'
+		});
+	}
+});
+
+//edit later to pull out specific edit fields from the req.body
+router.put('/:reportId', async (req, res) => {
+	try {
+		const { reportId } = req.params;
+		const editedReport = await Reports.update(reportId, req.body);
+		if(editedReport) {
+			res.status(200).json({
+							message: 'The report was edited succesfully.', editedReport
+						});
+		} else {
+			res.status(404).json({ message: 'The report is not found'})
+		}
+	} catch (error) {
+		console.log(error)
+		res.status(500).json({
+			message:
+				'Sorry, something went wrong while updating the report'
+		});
+		throw new Error(error);
+	}
+});
+
 module.exports = router;
