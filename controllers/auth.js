@@ -81,7 +81,7 @@ router.post('/firebase', async ({ body }, res) => {
 		// verify access token with Firebase admin.
 		const { email, name: fullName, picture: profilePic } = await admin.auth().verifyIdToken(accessToken);
 		// desconstructed variables form the userObj to be inserted into Users Model
-		const userObj = { email, fullName,  roles: 'admin', profilePic, created_at: moment().format() }
+		const userObj = { email, fullName,  roles: 'admin', profilePic, teamId: 0, created_at: moment().format() }
 		
 		// First we check if the email belongs to an exisitng user
 		const [existingUser] = await Users.findBy({ email });
@@ -89,13 +89,10 @@ router.post('/firebase', async ({ body }, res) => {
 		if (existingUser) {
 			const token = await generateToken(existingUser);
 			return res.status(201).json(token);
-		// If false we add the userObj to the User Model
+		// If false we add the userObj to the User Model, generate a token and return it back to the client
 		} else {
-			const [id] = await Users.add(userObj);
-			// When the resource has been created we deconstruct the Id and query the database for the User
-			const user = await Users.findById(id);
-			// When the user has been returned we generate a token and return it back to the client
-			const token = await generateToken(user);
+			const newUser = await Users.add(userObj);
+			const token = await generateToken(newUser);
 			return res.status(201).json(token);
 		}
 	} catch (error) {
