@@ -51,7 +51,7 @@ router.post('/:reportId', async (req, res) => {
 		// Parse the stringified questions and map to array
 		const resourceQuestions = JSON.parse(resource.questions)
 		const questionArr = resourceQuestions.map(q => q.question);
-		// Compare the questions from the report variable with the questions from
+		// Compare the questions from the resource variable with the questions from
 		// the request body, if the questions don't match, the client has attempted
 		// to alter them, throw an error
 		for (let i = 0; i < req.body.length; i++) {
