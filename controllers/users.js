@@ -67,8 +67,9 @@ router.get('/team/:teamId', async (req, res) => {
 });
 
 // Get teamId by joinCode and update member's teamId to reflect admin's
-router.get('/:id/joinCode/:joinCode', async (req, res) => {
-	const { id, joinCode } = req.params;
+router.get('/joinCode/:joinCode', async (req, res) => {
+	const { id } = req.decodedJwt;
+	const { joinCode } = req.params;
 
 	try {
 		const teamId = await Users.findByJoinCode(joinCode);
@@ -89,12 +90,13 @@ router.get('/:id/joinCode/:joinCode', async (req, res) => {
 //edit user by ID
 //what properties do we want to be editable?
 // need to validate user exists
-router.put('/:id', async (req, res) => {
+router.put('/', async (req, res) => {
 	try {
-		const { id } = req.params;
-		const { fullName, password, profilePic, active } = req.body;
-		if (fullName || password || profilePic || active) {
+		const id = req.decodedJwt.subject
+		const { fullName, password, profilePic, active, teamId, joinCode } = req.body;
+		if (fullName || password || profilePic || active || teamId || joinCode) {
 			const editedUser = await Users.update(id, req.body);
+			//create
 			res.status(200).json({
 				message: 'The user was edited succesfully.',
 				editedUser
@@ -115,9 +117,9 @@ router.put('/:id', async (req, res) => {
 });
 
 //delete user by ID. Not actually sure we'll need this as we may just switch Active to false.
-router.delete('/:id', async (req, res) => {
+router.delete('/', async (req, res) => {
 	try {
-		const { id } = req.params;
+		const { id } = req.decodedJwt;
 		const user = await Users.findById(id);
 		if (user) {
 			await Users.remove(id);
