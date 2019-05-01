@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
 });
 
 // Get user by id
-router.get('/', async (req, res) => {
+router.get('/byuser', async (req, res) => {
 	try {
 		const id = req.decodedJwt.subject;
 		const user = await Users.findById(id);
