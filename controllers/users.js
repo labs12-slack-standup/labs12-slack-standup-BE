@@ -69,8 +69,8 @@ router.get('/team', async (req, res) => {
 
 // Get teamId by joinCode and update member's teamId to reflect admin's
 router.get('/joinCode/:joinCode', async (req, res) => {
-	const { joinCode } = req.params;
 	const id = req.decodedJwt.subject;
+	const { joinCode } = req.params;
 
 	try {
 		const teamId = await Users.findByJoinCode(joinCode);
@@ -93,11 +93,11 @@ router.get('/joinCode/:joinCode', async (req, res) => {
 // need to validate user exists
 router.put('/', async (req, res) => {
 	try {
-		console.log(req.body);
 		const id = req.decodedJwt.subject;
 
 		const editedUser = await Users.update(id, req.body);
 		const token = await generateToken(editedUser);
+
 		res.status(200).json({
 			message: 'The user was edited succesfully.',
 			editedUser,
@@ -113,7 +113,7 @@ router.put('/', async (req, res) => {
 });
 
 //delete user by ID. Not actually sure we'll need this as we may just switch Active to false.
-router.delete('/:id', async (req, res) => {
+router.delete('/', async (req, res) => {
 	try {
 		const id = req.decodedJwt.subject;
 		const user = await Users.findById(id);
