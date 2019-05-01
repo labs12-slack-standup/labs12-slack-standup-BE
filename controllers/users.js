@@ -70,7 +70,7 @@ router.get('/team', async (req, res) => {
 // Get teamId by joinCode and update member's teamId to reflect admin's
 router.get('/joinCode/:joinCode', async (req, res) => {
 	const { joinCode } = req.params;
-	const { id } = req.decodedJwt;
+	const id = req.decodedJwt.subject;
 
 	try {
 		const teamId = await Users.findByJoinCode(joinCode);
