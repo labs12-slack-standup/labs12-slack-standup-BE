@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Reports = require('../models/Reports');
 
+// Get all reports
 router.get('/', async (req, res) => {
 	const { teamId } = req.decodedJwt;
 	try {
@@ -53,6 +54,24 @@ router.get('/:reportId', async (req, res) => {
 	}
 });
 
+// Add a report
+router.post('/', async (req, res) => {
+	const body = req.body;
+	const { teamId } = req.decodedToken;
+	try {
+		const report = await Reports.add(req.body);
+		res.status(201).json(report);
+	} catch (error) {
+		res.status(500).json({
+			message:
+				'Sorry, something went wrong while deleting the report'
+		});
+
+		//sentry call
+		throw new Error(error);
+	}
+});
+
 router.delete('/:id', async (req, res) => {
 	try {
 		const { id } = req.params;
@@ -69,6 +88,9 @@ router.delete('/:id', async (req, res) => {
 			message:
 				'Sorry, something went wrong while deleting the report'
 		});
+
+		//sentry call
+		throw new Error(error);
 	}
 });
 
@@ -77,15 +99,18 @@ router.put('/:reportId', async (req, res) => {
 	try {
 		const { reportId } = req.params;
 		const editedReport = await Reports.update(reportId, req.body);
-		if(editedReport) {
+		if (editedReport) {
 			res.status(200).json({
-							message: 'The report was edited succesfully.', editedReport
-						});
+				message: 'The report was edited succesfully.',
+				editedReport
+			});
 		} else {
-			res.status(404).json({ message: 'The report is not found'})
+			res.status(404).json({
+				message: 'The report is not found'
+			});
 		}
 	} catch (error) {
-		console.log(error)
+		console.log(error);
 		res.status(500).json({
 			message:
 				'Sorry, something went wrong while updating the report'
