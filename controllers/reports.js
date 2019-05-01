@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Reports = require('../models/Reports');
 
+// Get all reports
 router.get('/', async (req, res) => {
 	try {
 		const reports = await Reports.find();
@@ -16,6 +17,7 @@ router.get('/', async (req, res) => {
 	}
 });
 
+// Get all reports by teamId
 router.get('/team', async (req, res) => {
 	const { teamId } = req.decodedToken;
 	try {
@@ -41,7 +43,10 @@ router.get('/team', async (req, res) => {
 	}
 });
 
+// Add a report
 router.post('/', async (req, res) => {
+	const body = req.body;
+	const { teamId } = req.decodedToken;
 	try {
 		const report = await Reports.add(req.body);
 		res.status(201).json(report);

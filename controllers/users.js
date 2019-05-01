@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Users = require('../models/Users');
+const { generateToken } = require('../helpers/generateToken');
 
 // Get all users
 router.get('/', async (req, res) => {
@@ -19,9 +20,9 @@ router.get('/', async (req, res) => {
 });
 
 // Get user by id
-router.get('/:id', async (req, res) => {
+router.get('/', async (req, res) => {
 	try {
-		const { id } = req.params;
+		const id = req.decodedJwt.subject;
 		const user = await Users.findById(id);
 
 		if (user) {
@@ -46,8 +47,8 @@ router.get('/:id', async (req, res) => {
 });
 
 // Get all users for a team by teamId
-router.get('/team/:teamId', async (req, res) => {
-	const { teamId } = req.params;
+router.get('/team', async (req, res) => {
+	const { teamId } = req.decodedJwt;
 
 	try {
 		const users = await Users.findByTeam(teamId);
@@ -93,10 +94,14 @@ router.get('/joinCode/:joinCode', async (req, res) => {
 router.put('/', async (req, res) => {
 	try {
 		const id = req.decodedJwt.subject;
+    
 		const editedUser = await Users.update(id, req.body);
+		const token = await generateToken(editedUser);
+    
 		res.status(200).json({
 			message: 'The user was edited succesfully.',
-			editedUser
+			editedUser,
+			token
 		});
 	} catch (error) {
 		res.status(500).json({
