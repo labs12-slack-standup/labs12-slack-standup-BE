@@ -59,6 +59,10 @@ yarn server
      - [Get Users](#get-users)
           - [Get User By Id](#get-user-by-id)
           - [Get Users By TeamId](#get-users-by-teamid)
+     - [Delete Users](#delete-users)
+          - [Delete User By Id](#delete-user-by-id)
+     - [Edit Users](#edit-users)     
+          - [Edit User By Id](#edit-user-by-id)     
 - [Report Routes](#report-routes)
      - [Get Reports](#get-reports)
           - [Get All Reports](#get-all-reports)
@@ -320,6 +324,124 @@ _example:_
   "message": "Sorry but something went wrong while retrieving the users for this team."
 }
 ```
+
+## **DELETE USERS**
+
+### **_Delete Users By ID_**
+
+_Method Url:_ `/api/users/:id`
+
+_HTTP method:_ **[DELETE]**
+
+#### Headers
+
+| name            | type   | required | description         
+
+#### Response
+
+##### 200 (OK)
+
+> If the users are found in the database, the endpoint will return an HTTP response with a status code `200` and a body as below.
+
+_example:_
+
+```
+{
+    "message": "The user has been successfully removed.",
+    
+}
+```
+
+#### 404 (Not Found)
+
+> If the provided `id` doesn't belong to a user, the endpoint will return an HTTP response with a status code `404` and a body as below.
+
+_example:_
+
+```
+{
+  "message": "Sorry, that user does not exist."
+}
+```
+
+#### 500 (Internal Server Error)
+
+> If there is a server or database error, the endpoint will return an HTTP response with a status code `500` and a body as below.
+
+_example:_
+
+```
+{
+  "message": "Sorry, there was an error deleting the user."
+}
+```
+
+## **EDIT USERS**
+
+### **_Delete Users By ID_**
+
+_Method Url:_ `/api/users/:id`
+
+_HTTP method:_ **[DELPUTETE]**
+
+#### Headers
+
+| name            | type   | required | description         
+
+#### Body
+> An object with at least one user property of the following: `fullName`, `password`, `profilePic`, `active`.
+
+_example:_
+
+```
+{
+  "active": false
+}
+```
+
+#### Response
+
+##### 200 (OK)
+
+> If the users are found in the database and the request body contains a valid user property, the endpoint will return an HTTP response with a status code `200` and a body as below.
+
+_example:_
+
+```
+{
+    "message": "The user has been successfully removed.",
+    "editedUser": {
+        teamId: integer,
+        email: string,
+        password: string,
+        fullName: string,
+        roles: string,
+        profilePic: string,
+        created_at: string,
+        timezone: string,
+        joinCode: integer,
+        active: boolean
+    }
+}
+```
+
+#### 404 (Not Found)
+
+> Haven't built this validation yet.
+
+#### 500 (Internal Server Error)
+
+> If there is a server or database error, the endpoint will return an HTTP response with a status code `500` and a body as below.
+
+_example:_
+
+```
+{
+  "message": "Sorry, there was an error when updating the user."
+}
+```
+
+
 
 # REPORT ROUTES
 
