@@ -3,6 +3,7 @@ const Users = require('../models/Users');
 
 // Get all users
 router.get('/', async (req, res) => {
+	console.log(req.decodedJwt);
 	try {
 		const users = await Users.find();
 		const message = 'The users were found in the database.';
