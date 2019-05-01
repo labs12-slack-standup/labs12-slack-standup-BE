@@ -26,9 +26,9 @@ function find() {
 }
 
 // Get report by id
-function findById(id) {
+function findById(id, teamId) {
 	return db('reports')
-		.where({ id })
+		.where({ id, teamId })
 		.first();
 }
 

@@ -21,10 +21,10 @@ Sentry.init({
 middleware(server);
 
 // controllers
-server.use('/api/auth', authController);
-server.use('/api/users', userController);
-server.use('/api/reports', reportController);
-server.use('/api/responses', responseController);
+server.use('/api/auth', authenticate, authController);
+server.use('/api/users', authenticate, userController);
+server.use('/api/reports', authenticate, reportController);
+server.use('/api/responses', authenticate, responseController);
 
 // error reporting middleware (Must be after all requests)
 errorMiddleware(server);
