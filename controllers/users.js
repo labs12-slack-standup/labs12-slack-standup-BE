@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Users = require('../models/Users');
+const { generateToken } = require('../helpers/generateToken');
 
 // Get all users
 router.get('/', async (req, res) => {
@@ -19,9 +20,9 @@ router.get('/', async (req, res) => {
 });
 
 // Get user by id
-router.get('/:id', async (req, res) => {
+router.get('/', async (req, res) => {
 	try {
-		const { id } = req.params;
+		const id = req.decodedJwt.subject;
 		const user = await Users.findById(id);
 
 		if (user) {
@@ -46,8 +47,8 @@ router.get('/:id', async (req, res) => {
 });
 
 // Get all users for a team by teamId
-router.get('/team/:teamId', async (req, res) => {
-	const { teamId } = req.params;
+router.get('/team', async (req, res) => {
+	const { teamId } = req.decodedJwt;
 
 	try {
 		const users = await Users.findByTeam(teamId);
@@ -67,8 +68,9 @@ router.get('/team/:teamId', async (req, res) => {
 });
 
 // Get teamId by joinCode and update member's teamId to reflect admin's
-router.get('/:id/joinCode/:joinCode', async (req, res) => {
-	const { id, joinCode } = req.params;
+router.get('/joinCode/:joinCode', async (req, res) => {
+	const { joinCode } = req.params;
+	const { id } = req.decodedJwt;
 
 	try {
 		const teamId = await Users.findByJoinCode(joinCode);
@@ -89,22 +91,18 @@ router.get('/:id/joinCode/:joinCode', async (req, res) => {
 //edit user by ID
 //what properties do we want to be editable?
 // need to validate user exists
-router.put('/:id', async (req, res) => {
+router.put('/', async (req, res) => {
 	try {
-		const { id } = req.params;
-		const { fullName, password, profilePic, active } = req.body;
-		if (fullName || password || profilePic || active) {
-			const editedUser = await Users.update(id, req.body);
-			res.status(200).json({
-				message: 'The user was edited succesfully.',
-				editedUser
-			});
-		} else {
-			res.status(400).json({
-				message:
-					'Please include a valid user property to edit.'
-			});
-		}
+		console.log(req.body);
+		const id = req.decodedJwt.subject;
+
+		const editedUser = await Users.update(id, req.body);
+		const token = await generateToken(editedUser);
+		res.status(200).json({
+			message: 'The user was edited succesfully.',
+			editedUser,
+			token
+		});
 	} catch (error) {
 		res.status(500).json({
 			message:
@@ -117,7 +115,7 @@ router.put('/:id', async (req, res) => {
 //delete user by ID. Not actually sure we'll need this as we may just switch Active to false.
 router.delete('/:id', async (req, res) => {
 	try {
-		const { id } = req.params;
+		const id = req.decodedJwt.subject;
 		const user = await Users.findById(id);
 		if (user) {
 			await Users.remove(id);
