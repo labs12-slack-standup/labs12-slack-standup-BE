@@ -74,9 +74,10 @@ const config = {
 
 admin.initializeApp({ credential: admin.credential.cert(config) });
 
+// UPDATES NEEDED: We will need to bring in the timezone.
 router.post('/firebase', async ({ body }, res) => {
 	// deconstruct access token
-	const { accessToken } = body.stsTokenManager;
+	const { accessToken } = body.user.stsTokenManager;
 	try {
 		// verify access token with Firebase admin.
 		const {
@@ -86,28 +87,37 @@ router.post('/firebase', async ({ body }, res) => {
 		} = await admin.auth().verifyIdToken(accessToken);
 		// desconstructed variables form the userObj to be inserted into Users Model
 		const userObj = {
+			teamId: null,
 			email,
+			password: null,
 			fullName,
 			roles: 'member',
 			profilePic,
-			created_at: moment().format()
+			created_at: moment().format(),
+			timezone: body.timezone,
+			joinCode: null
 		};
 
 		// First we check if the email belongs to an exisitng user
 		const [existingUser] = await Users.findBy({ email });
 		// If true we generate a token and return it back to the client
 		if (existingUser) {
-			const token = await generateToken(existingUser);
-			return res.status(201).json(token);
+			const token = generateToken(existingUser);
+			console.log(token);
+			res.status(201).json(token);
 			// If false we add the userObj to the User Model, generate a token and return it back to the client
 		} else {
 			const newUser = await Users.add(userObj);
-			const token = await generateToken(newUser);
-			return res.status(201).json(token);
+			console.log(newUser);
+			const token = generateToken(newUser);
+			console.log(token);
+			res.status(201).json(token);
 		}
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({ message: 'Error authenticating user' });
+
+		throw new Error(error);
 	}
 });
 
