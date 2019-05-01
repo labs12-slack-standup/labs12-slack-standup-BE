@@ -87,6 +87,7 @@ router.get('/:id/joinCode/:joinCode', async (req, res) => {
 
 //edit user by ID
 //what properties do we want to be editable?
+// need to validate user exists
 router.put('/:id', async (req, res) => {
 	try {
 		const { id } = req.params;
