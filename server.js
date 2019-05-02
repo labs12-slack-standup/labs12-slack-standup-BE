@@ -21,6 +21,7 @@ Sentry.init({
 middleware(server);
 
 // controllers
+
 server.use('/api/auth', authController);
 server.use('/api/users', authenticate, userController);
 server.use('/api/reports', authenticate, reportController);

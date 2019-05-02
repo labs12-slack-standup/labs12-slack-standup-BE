@@ -7,9 +7,9 @@ const cors = require('cors');
 
 module.exports = server => {
 	server.use(Sentry.Handlers.requestHandler()); // needs to be before all request
+	server.use(cors());
 	server.use(express.json());
 	server.use(bodyParser.json());
 	server.use(helmet());
 	server.use(morgan('dev'));
-	server.use(cors());
 };
