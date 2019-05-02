@@ -47,8 +47,10 @@ router.get('/team', async (req, res) => {
 router.post('/', async (req, res) => {
 	//destructuring teamId from decoded token
 	const { teamId } = req.decodedJwt;
+	
 	//adding teamId to report object
 	const newReport = {...req.body, teamId};
+	console.log(newReport);
 	
 	try {
 		const report = await Reports.add(newReport);
