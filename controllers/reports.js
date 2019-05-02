@@ -26,6 +26,7 @@ router.get('/', async (req, res) => {
 	}
 });
 
+
 // This route will only return the reportId in the request parameters
 // if the resource teamId matches the token teamId
 router.get('/:reportId', async (req, res) => {
@@ -55,10 +56,13 @@ router.get('/:reportId', async (req, res) => {
 
 // Add a report
 router.post('/', async (req, res) => {
-	const body = req.body;
-	const { teamId } = req.decodedToken;
+	//destructuring teamId from decoded token
+	const { teamId } = req.decodedJwt;
+	//adding teamId to report object
+	const newReport = {...req.body, teamId};
+	
 	try {
-		const report = await Reports.add(req.body);
+		const report = await Reports.add(newReport);
 		res.status(201).json(report);
 	} catch (error) {
 		res.status(500).json({
@@ -114,6 +118,7 @@ router.put('/:reportId', async (req, res) => {
 			message:
 				'Sorry, something went wrong while updating the report'
 		});
+		//sentry call
 		throw new Error(error);
 	}
 });
