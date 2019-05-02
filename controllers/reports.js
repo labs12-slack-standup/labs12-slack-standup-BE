@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Reports = require('../models/Reports');
+const { adminValidation } = require('../middleware/validation/reports');
 
 // This route will return all reports by Team ID
 router.get('/', async (req, res) => {
@@ -8,11 +9,10 @@ router.get('/', async (req, res) => {
 		const reports = await Reports.findByTeam(teamId);
 		if (reports.length === 0) {
 			let message =
-				'No reports by that user were found in the database';
-			res.status(404).json({ message });
+				'No reports by that team were found in the database';
+			res.status(200).json({ message, reports });
 		} else {
-			const message =
-				'The reports were found in the database.';
+			let message = 'The reports were found in the database.';
 			res.status(200).json({ message, reports });
 		}
 	} catch (error) {
@@ -59,17 +59,16 @@ router.get('/:reportId', async (req, res) => {
 });
 
 // Add a report
-router.post('/', async (req, res) => {
+router.post('/', adminValidation, async (req, res) => {
 	const { teamId } = req.decodedJwt;
-	const body = req.body;
-	console.log(teamId);
+
 	try {
 		const report = await Reports.add(req.body);
 		res.status(201).json(report);
 	} catch (error) {
 		res.status(500).json({
 			message:
-				'Sorry, something went wrong while deleting the report'
+				'Sorry, something went wrong while adding the report'
 		});
 
 		//sentry call
@@ -77,7 +76,7 @@ router.post('/', async (req, res) => {
 	}
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', adminValidation, async (req, res) => {
 	try {
 		const { id } = req.params;
 		const count = await Reports.remove(id);
