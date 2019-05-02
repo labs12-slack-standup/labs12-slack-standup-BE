@@ -19,10 +19,10 @@ router.get('/', async (req, res) => {
 
 // Get all reports by teamId
 router.get('/team', async (req, res) => {
-	const { teamId } = req.decodedToken;
+	const { teamId } = req.decodedJwt;
 	try {
 		const reports = await Reports.findByTeam(teamId);
-		console.log(reports);
+
 		if (reports.length === 0) {
 			let message =
 				'No reports by that user were found in the database';
@@ -45,8 +45,9 @@ router.get('/team', async (req, res) => {
 
 // Add a report
 router.post('/', async (req, res) => {
+	const { teamId } = req.decodedJwt;
 	const body = req.body;
-	const { teamId } = req.decodedToken;
+	console.log(teamId);
 	try {
 		const report = await Reports.add(req.body);
 		res.status(201).json(report);
