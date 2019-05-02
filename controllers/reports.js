@@ -1,28 +1,11 @@
 const router = require('express').Router();
 const Reports = require('../models/Reports');
 
-// Get all reports
+// This route will return all reports by Team ID
 router.get('/', async (req, res) => {
-	try {
-		const reports = await Reports.find();
-		let message = 'The reports were found in the database.';
-		res.status(200).json({ message, reports });
-	} catch (error) {
-		res.status(500).json({
-			message:
-				'Sorry but something went wrong while retrieving the list of reports'
-		});
-
-		throw new Error(error);
-	}
-});
-
-// Get all reports by teamId
-router.get('/team', async (req, res) => {
 	const { teamId } = req.decodedJwt;
 	try {
 		const reports = await Reports.findByTeam(teamId);
-
 		if (reports.length === 0) {
 			let message =
 				'No reports by that user were found in the database';
@@ -31,6 +14,38 @@ router.get('/team', async (req, res) => {
 			const message =
 				'The reports were found in the database.';
 			res.status(200).json({ message, reports });
+		}
+	} catch (error) {
+		res.status(500).json({
+			message:
+				'Sorry but something went wrong while retrieving the list of reports'
+		});
+
+		//sentry call
+		throw new Error(error);
+	}
+});
+
+// This route will only return the reportId in the request parameters
+// if the resource teamId matches the token teamId
+router.get('/:reportId', async (req, res) => {
+	const { reportId } = req.params;
+	const { teamId } = req.decodedJwt;
+	try {
+		const report = await Reports.findById(reportId, teamId);
+		if (report) {
+			const message =
+				'The reports were found in the database.';
+			res.status(200).json({
+				message,
+				report: {
+					...report,
+					questions: JSON.parse(report.questions)
+				}
+			});
+		} else {
+			let message = 'No report was found in the database';
+			res.status(404).json({ message });
 		}
 	} catch (error) {
 		res.status(500).json({
