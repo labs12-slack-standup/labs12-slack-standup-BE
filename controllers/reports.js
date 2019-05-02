@@ -64,7 +64,9 @@ router.post('/', async (req, res) => {
 	console.log(newReport);
 	
 	try {
+		console.log('before')
 		const report = await Reports.add(newReport);
+		console.log('report:', report)
 		res.status(201).json(report);
 	} catch (error) {
 		res.status(500).json({
