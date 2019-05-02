@@ -104,6 +104,7 @@ router.put('/:reportId', async (req, res) => {
 			message:
 				'Sorry, something went wrong while updating the report'
 		});
+		//sentry call
 		throw new Error(error);
 	}
 });
