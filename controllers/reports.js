@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
 
 // Get all reports by teamId
 router.get('/team', async (req, res) => {
-	const { teamId } = req.decodedToken;
+	const { teamId } = req.decodedJwt;
 	try {
 		const reports = await Reports.findByTeam(teamId);
 		console.log(reports);
@@ -45,10 +45,13 @@ router.get('/team', async (req, res) => {
 
 // Add a report
 router.post('/', async (req, res) => {
-	const body = req.body;
-	const { teamId } = req.decodedToken;
+	//destructuring teamId from decoded token
+	const { teamId } = req.decodedJwt;
+	//adding teamId to report object
+	const newReport = {...req.body, teamId};
+	
 	try {
-		const report = await Reports.add(req.body);
+		const report = await Reports.add(newReport);
 		res.status(201).json(report);
 	} catch (error) {
 		res.status(500).json({
