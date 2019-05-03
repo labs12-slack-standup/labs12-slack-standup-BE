@@ -136,7 +136,7 @@ router.post('/:reportId', async (req, res) => {
 		res.status(201).json({
 			message: 'Thank you for posting your responses.'
 		});
-	} catch (err) {
+	} catch (error) {
 		res.status(500).json({
 			message: 'Sorry but something went wrong while posting your responses.'
 		});

@@ -38,7 +38,8 @@ router.get('/:reportId', async (req, res) => {
 				message,
 				report: {
 					...report,
-					questions: JSON.parse(report.questions)
+					questions: JSON.parse(report.questions),
+					schedule: JSON.parse(report.schedule)
 				}
 			});
 		} else {
