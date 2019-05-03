@@ -7,6 +7,7 @@ module.exports = {
 	findById,
 	findByTeam,
 	findByUserId,
+	findByIdAndTeamId,
 	update,
 	remove
 };
@@ -27,11 +28,11 @@ function find() {
 }
 
 // Get report by id
-// function findById(id, teamId) {
-// 	return db('reports')
-// 		.where({ id, teamId })
-// 		.first();
-// }
+function findByIdAndTeamId(id, teamId) {
+	return db('reports')
+		.where({ id, teamId })
+		.first();
+}
 
 // this is placeholder, we'll go back in and add teamId validation. Note that it will filter through to every DB method that uses findById
 function findById(id) {
