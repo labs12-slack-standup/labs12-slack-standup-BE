@@ -76,7 +76,7 @@ router.post('/', adminValidation, async (req, res) => {
 	}
 });
 
-router.delete('/:id', adminValidation, adminValidation, async (req, res) => {
+router.delete('/:id', adminValidation, async (req, res) => {
 	try {
 		const { id } = req.params;
 		const count = await Reports.remove(id);
