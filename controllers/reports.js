@@ -31,14 +31,15 @@ router.get('/:reportId', async (req, res) => {
 	const { reportId } = req.params;
 	const { teamId } = req.decodedJwt;
 	try {
-		const report = await Reports.findById(reportId, teamId);
+		const report = await Reports.findByIdAndTeamId(reportId, teamId);
 		if (report) {
 			const message = 'The reports were found in the database.';
 			res.status(200).json({
 				message,
 				report: {
 					...report,
-					questions: JSON.parse(report.questions)
+					questions: JSON.parse(report.questions),
+					schedule: JSON.parse(report.schedule)
 				}
 			});
 		} else {
@@ -60,16 +61,15 @@ router.get('/:reportId', async (req, res) => {
 router.post('/', adminValidation, async (req, res) => {
 	//destructuring teamId from decoded token
 	const { teamId } = req.decodedJwt;
-	
+
 	//adding teamId to report object
 
 	const newReport = { ...req.body, teamId };
 
-
 	try {
-		console.log('before')
+		console.log('before');
 		const report = await Reports.add(newReport);
-		console.log('report:', report)
+		console.log('report:', report);
 		res.status(201).json(report);
 	} catch (error) {
 		res.status(500).json({

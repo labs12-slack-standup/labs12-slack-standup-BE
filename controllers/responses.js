@@ -19,8 +19,6 @@ router.get('/', async (req, res) => {
 	}
 });
 
-
-
 // Gets all reponses by report
 router.get('/:reportId', async (req, res) => {
 	const { reportId } = req.params;
@@ -29,15 +27,22 @@ router.get('/:reportId', async (req, res) => {
 	const endDay = dateFns.endOfDay(new Date());
 	try {
 		// Run a check in the Reports model to verify that the reportId and TeamId are a match
-		// If teamId and reportId don't match with resource error will be thrown 
+		// If teamId and reportId don't match with resource error will be thrown
 		await Reports.findById(reportId, teamId);
 		// reportId and teamId have passed verification check.
 		const responses = await Responses.findByAndJoin(reportId, startday, endDay);
 		// We need to parse each resource and insert into there own user object
 
 		// Create Members Array
-		let membersArray = []
-		
+		let membersArray = [];
+
+		// Check if responses are in array
+		if (responses.length < 1) {
+			return res.status(204).json({
+				message: 'There are currently no reponses for this report.'
+			});
+		}
+
 		// Insert First Resource
 		membersArray.push({
 			userId: responses[0].userId,
@@ -48,19 +53,19 @@ router.get('/:reportId', async (req, res) => {
 					answer: responses[0].answer
 				}
 			]
-		})
+		});
 
 		// Start loop from second resource
-		for (let i = 1; i < responses.length; i ++) {
+		for (let i = 1; i < responses.length; i++) {
 			const n = membersArray.length - 1;
-			// If the fullName of the current resource matches the fullName of the last resource in the 
+			// If the fullName of the current resource matches the fullName of the last resource in the
 			// membersArray push the questions to the questions property
 			if (membersArray[n].fullName === responses[i].fullName) {
 				membersArray[n].questions.push({
 					question: responses[i].question,
 					answer: responses[i].answer
-				})
-			// If the fullName's do not match insert a new object
+				});
+				// If the fullName's do not match insert a new object
 			} else {
 				membersArray.push({
 					userId: responses[i].userId,
@@ -71,7 +76,7 @@ router.get('/:reportId', async (req, res) => {
 							answer: responses[i].answer
 						}
 					]
-				})
+				});
 			}
 		}
 
@@ -101,16 +106,19 @@ router.post('/:reportId', async (req, res) => {
 	try {
 		// Query the db to verify that this team member is verified to insert a
 		// resouce for this report.
-		const resource = await Reports.findById(reportId, teamId);
+		const resource = await Reports.findByIdAndTeamId(reportId, teamId);
+		//console.log(resource);
 		// Parse the stringified questions and map to array
-		const resourceQuestions = JSON.parse(resource.questions)
-		const questionArr = resourceQuestions.map(q => q.question);
+		const resourceQuestions = JSON.parse(resource.questions);
+		//console.log(resourceQuestions);
+
 		// Compare the questions from the resource variable with the questions from
 		// the request body, if the questions don't match, the client has attempted
 		// to alter them, throw an error
 		for (let i = 0; i < req.body.length; i++) {
-			const q = req.body[i].question
-			if (!questionArr.includes(q)) {
+			const q = req.body[i].question;
+
+			if (!resourceQuestions.includes(q)) {
 				throw new Error('Incoming questions failed verification check');
 			}
 		}
@@ -119,23 +127,21 @@ router.post('/:reportId', async (req, res) => {
 			reportId,
 			userId: subject,
 			question: body.question,
-			answer: body.response,
-			submitted_date: moment().format(),
+			answer: body.answer,
+			submitted_date: moment().format()
 		}));
 
 		await Responses.add(responseArr);
 
 		res.status(201).json({
-			message:
-				'Thank you for posting your responses.'
+			message: 'Thank you for posting your responses.'
 		});
-	} catch (err) {
+	} catch (error) {
 		res.status(500).json({
-			message:
-				'Sorry but something went wrong while posting your responses.'
+			message: 'Sorry but something went wrong while posting your responses.'
 		});
 		throw new Error(error);
 	}
-})
+});
 
 module.exports = router;
