@@ -15,7 +15,7 @@ exports.seed = function(knex) {
 				'Saturday',
 				'Sunday'
 			]),
-			scheduleTime: moment().format(),
+			scheduleTime: '00:00',
 			recurring: '1week',
 			message: 'Please fill out the report',
 			responseTimeLimit: moment().format(),
@@ -39,7 +39,7 @@ exports.seed = function(knex) {
 				'Saturday',
 				'Sunday'
 			]),
-			scheduleTime: moment().format(),
+			scheduleTime: '00:00',
 			recurring: '1week',
 			message: 'Please fill out the report',
 			responseTimeLimit: moment().format(),
@@ -63,7 +63,7 @@ exports.seed = function(knex) {
 				'Saturday',
 				'Sunday'
 			]),
-			scheduleTime: moment().format(),
+			scheduleTime: '00:00',
 			recurring: '1week',
 			message: 'Please fill out the report',
 			responseTimeLimit: moment().format(),
@@ -87,7 +87,7 @@ exports.seed = function(knex) {
 				'Saturday',
 				'Sunday'
 			]),
-			scheduleTime: moment().format(),
+			scheduleTime: '00:00',
 			recurring: '1week',
 			message: 'Please fill out the report',
 			responseTimeLimit: moment().format(),
@@ -111,7 +111,7 @@ exports.seed = function(knex) {
 				'Saturday',
 				'Sunday'
 			]),
-			scheduleTime: moment().format(),
+			scheduleTime: '00:00',
 			recurring: '1week',
 			message: 'Please fill out the report',
 			responseTimeLimit: moment().format(),

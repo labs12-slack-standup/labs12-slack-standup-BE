@@ -18,7 +18,6 @@ async function add(report) {
 		.insert(report)
 		.returning('id');
 
-
 	return findById(id);
 }
 

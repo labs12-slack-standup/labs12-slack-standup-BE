@@ -10,7 +10,7 @@ exports.up = function(knex) {
 
 		tbl.text('schedule');
 
-		tbl.datetime('scheduleTime', { precision: 2 });
+		tbl.time('scheduleTime', { precision: 2 });
 
 		tbl.string('recurring', 128);
 
