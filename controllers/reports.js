@@ -58,11 +58,15 @@ router.get('/:reportId', async (req, res) => {
 router.post('/', async (req, res) => {
 	//destructuring teamId from decoded token
 	const { teamId } = req.decodedJwt;
+	
 	//adding teamId to report object
 	const newReport = {...req.body, teamId};
+	console.log(newReport);
 	
 	try {
+		console.log('before')
 		const report = await Reports.add(newReport);
+		console.log('report:', report)
 		res.status(201).json(report);
 	} catch (error) {
 		res.status(500).json({
