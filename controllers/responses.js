@@ -2,6 +2,7 @@ const router = require('express').Router();
 const Responses = require('../models/Responses');
 const Reports = require('../models/Reports');
 const moment = require('moment');
+const dateFns = require('date-fns');
 
 router.get('/', async (req, res) => {
 	try {
@@ -17,20 +18,73 @@ router.get('/', async (req, res) => {
 		throw new Error(error);
 	}
 });
-// gets all reponses by report
+
+
+
+// Gets all reponses by report
 router.get('/:reportId', async (req, res) => {
 	const { reportId } = req.params;
+	const { teamId } = req.decodedJwt;
+	const startday = dateFns.startOfDay(new Date());
+	const endDay = dateFns.endOfDay(new Date());
 	try {
-		const responses = await Responses.findBy({ reportId });
+		// Run a check in the Reports model to verify that the reportId and TeamId are a match
+		// If teamId and reportId don't match with resource error will be thrown 
+		await Reports.findById(reportId, teamId);
+		// reportId and teamId have passed verification check.
+		const responses = await Responses.findByAndJoin(reportId, startday, endDay);
+		// We need to parse each resource and insert into there own user object
+
+		// Create Members Array
+		let membersArray = []
+		
+		// Insert First Resource
+		membersArray.push({
+			userId: responses[0].userId,
+			fullName: responses[0].fullName,
+			questions: [
+				{
+					question: responses[0].question,
+					answer: responses[0].answer
+				}
+			]
+		})
+
+		// Start loop from second resource
+		for (let i = 1; i < responses.length; i ++) {
+			const n = membersArray.length - 1;
+			// If the fullName of the current resource matches the fullName of the last resource in the 
+			// membersArray push the questions to the questions property
+			if (membersArray[n].fullName === responses[i].fullName) {
+				membersArray[n].questions.push({
+					question: responses[i].question,
+					answer: responses[i].answer
+				})
+			// If the fullName's do not match insert a new object
+			} else {
+				membersArray.push({
+					userId: responses[i].userId,
+					fullName: responses[i].fullName,
+					questions: [
+						{
+							question: responses[i].question,
+							answer: responses[i].answer
+						}
+					]
+				})
+			}
+		}
+
 		if (responses.length === 0) {
 			res.status(404).json({ Message: 'no responses found' });
 		} else {
 			res.status(200).json({
 				message: 'Responses found in database',
-				responses
+				membersArray
 			});
 		}
 	} catch (error) {
+		console.log(error);
 		res.status(500).json({
 			message:
 				'Sorry but something went wrong while retrieving the list of responses by team.'

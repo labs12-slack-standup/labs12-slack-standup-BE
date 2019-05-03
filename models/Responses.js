@@ -4,7 +4,8 @@ module.exports = {
 	add,
 	find,
 	findBy,
-	findById
+	findById,
+	findByAndJoin
 };
 
 // Create response
@@ -31,4 +32,15 @@ function findById(id) {
 	return db('responses')
 		.where({ id })
 		.first();
+}
+
+// This allows us to search by reportId join with users table and return user's name
+function findByAndJoin(reportId, startday, endDay) {
+	return db('responses')
+		.where('reportId', reportId)
+		.where('submitted_date', '>=', startday)
+		.where('submitted_date', '<=', endDay)
+		.join('users', 'responses.userId', 'users.id')
+		.select('users.id as userId', 'users.fullName', 'responses.question', 'responses.answer', 'responses.submitted_date')
+		.orderBy('responses.submitted_date', 'desc')
 }
