@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Reports = require('../models/Reports');
+const { adminValidation } = require('../middleware/validation/reports');
 
 // This route will return all reports by Team ID
 router.get('/', async (req, res) => {
@@ -7,12 +8,10 @@ router.get('/', async (req, res) => {
 	try {
 		const reports = await Reports.findByTeam(teamId);
 		if (reports.length === 0) {
-			let message =
-				'No reports by that user were found in the database';
-			res.status(404).json({ message });
+			let message = 'No reports by that team were found in the database';
+			res.status(200).json({ message, reports });
 		} else {
-			const message =
-				'The reports were found in the database.';
+			let message = 'The reports were found in the database.';
 			res.status(200).json({ message, reports });
 		}
 	} catch (error) {
@@ -26,7 +25,6 @@ router.get('/', async (req, res) => {
 	}
 });
 
-
 // This route will only return the reportId in the request parameters
 // if the resource teamId matches the token teamId
 router.get('/:reportId', async (req, res) => {
@@ -35,12 +33,16 @@ router.get('/:reportId', async (req, res) => {
 	try {
 		const report = await Reports.findById(reportId, teamId);
 		if (report) {
-			const message =
-				'The reports were found in the database.';
-			res.status(200).json({ message, report: { ...report, questions: JSON.parse(report.questions) } });
+			const message = 'The reports were found in the database.';
+			res.status(200).json({
+				message,
+				report: {
+					...report,
+					questions: JSON.parse(report.questions)
+				}
+			});
 		} else {
-			let message =
-				'No report was found in the database';
+			let message = 'No report was found in the database';
 			res.status(404).json({ message });
 		}
 	} catch (error) {
@@ -55,14 +57,15 @@ router.get('/:reportId', async (req, res) => {
 });
 
 // Add a report
-router.post('/', async (req, res) => {
+router.post('/', adminValidation, async (req, res) => {
 	//destructuring teamId from decoded token
 	const { teamId } = req.decodedJwt;
 	
 	//adding teamId to report object
-	const newReport = {...req.body, teamId};
-	console.log(newReport);
-	
+
+	const newReport = { ...req.body, teamId };
+
+
 	try {
 		console.log('before')
 		const report = await Reports.add(newReport);
@@ -70,8 +73,7 @@ router.post('/', async (req, res) => {
 		res.status(201).json(report);
 	} catch (error) {
 		res.status(500).json({
-			message:
-				'Sorry, something went wrong while deleting the report'
+			message: 'Sorry, something went wrong while adding the report'
 		});
 
 		//sentry call
@@ -79,7 +81,7 @@ router.post('/', async (req, res) => {
 	}
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', adminValidation, async (req, res) => {
 	try {
 		const { id } = req.params;
 		const count = await Reports.remove(id);
@@ -92,8 +94,7 @@ router.delete('/:id', async (req, res) => {
 		}
 	} catch (error) {
 		res.status(500).json({
-			message:
-				'Sorry, something went wrong while deleting the report'
+			message: 'Sorry, something went wrong while deleting the report'
 		});
 
 		//sentry call
@@ -102,7 +103,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 //edit later to pull out specific edit fields from the req.body
-router.put('/:reportId', async (req, res) => {
+router.put('/:reportId', adminValidation, async (req, res) => {
 	try {
 		const { reportId } = req.params;
 		const editedReport = await Reports.update(reportId, req.body);
@@ -119,8 +120,7 @@ router.put('/:reportId', async (req, res) => {
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({
-			message:
-				'Sorry, something went wrong while updating the report'
+			message: 'Sorry, something went wrong while updating the report'
 		});
 		//sentry call
 		throw new Error(error);

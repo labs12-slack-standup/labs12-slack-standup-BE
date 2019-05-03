@@ -18,22 +18,12 @@ exports.seed = function(knex) {
 			scheduleTime: moment().format(),
 			recurring: '1week',
 			message: 'Please fill out the report',
-			responseTimeLimit: 600,
+			responseTimeLimit: moment().format(),
 			questions: JSON.stringify([
-				{
-					question: 'How do you feel today?'
-				},
-				{
-					question: 'What did you get done today?'
-				},
-				{
-					question:
-						'Did you finish your goals for today?'
-				},
-				{
-					question:
-						'What will you work on tomorrow?'
-				}
+				'How do you feel today?',
+				'What did you get done today?',
+				'Did you finish your goals for today?',
+				'What will you work on tomorrow?'
 			])
 		},
 		{
@@ -52,22 +42,12 @@ exports.seed = function(knex) {
 			scheduleTime: moment().format(),
 			recurring: '1week',
 			message: 'Please fill out the report',
-			responseTimeLimit: 600,
+			responseTimeLimit: moment().format(),
 			questions: JSON.stringify([
-				{
-					question: 'How do you feel today?'
-				},
-				{
-					question: 'What did you get done today?'
-				},
-				{
-					question:
-						'Did you finish your goals for today?'
-				},
-				{
-					question:
-						'What will you work on tomorrow?'
-				}
+				'How do you feel today?',
+				'What did you get done today?',
+				'Did you finish your goals for today?',
+				'What will you work on tomorrow?'
 			])
 		},
 		{
@@ -86,22 +66,12 @@ exports.seed = function(knex) {
 			scheduleTime: moment().format(),
 			recurring: '1week',
 			message: 'Please fill out the report',
-			responseTimeLimit: 600,
+			responseTimeLimit: moment().format(),
 			questions: JSON.stringify([
-				{
-					question: 'How do you feel today?'
-				},
-				{
-					question: 'What did you get done today?'
-				},
-				{
-					question:
-						'Did you finish your goals for today?'
-				},
-				{
-					question:
-						'What will you work on tomorrow?'
-				}
+				'How do you feel today?',
+				'What did you get done today?',
+				'Did you finish your goals for today?',
+				'What will you work on tomorrow?'
 			])
 		},
 		{
@@ -120,22 +90,12 @@ exports.seed = function(knex) {
 			scheduleTime: moment().format(),
 			recurring: '1week',
 			message: 'Please fill out the report',
-			responseTimeLimit: 600,
+			responseTimeLimit: moment().format(),
 			questions: JSON.stringify([
-				{
-					question: 'How do you feel today?'
-				},
-				{
-					question: 'What did you get done today?'
-				},
-				{
-					question:
-						'Did you finish your goals for today?'
-				},
-				{
-					question:
-						'What will you work on tomorrow?'
-				}
+				'How do you feel today?',
+				'What did you get done today?',
+				'Did you finish your goals for today?',
+				'What will you work on tomorrow?'
 			])
 		},
 		{
@@ -154,22 +114,12 @@ exports.seed = function(knex) {
 			scheduleTime: moment().format(),
 			recurring: '1week',
 			message: 'Please fill out the report',
-			responseTimeLimit: 600,
+			responseTimeLimit: moment().format(),
 			questions: JSON.stringify([
-				{
-					question: 'How do you feel today?'
-				},
-				{
-					question: 'What did you get done today?'
-				},
-				{
-					question:
-						'Did you finish your goals for today?'
-				},
-				{
-					question:
-						'What will you work on tomorrow?'
-				}
+				'How do you feel today?',
+				'What did you get done today?',
+				'Did you finish your goals for today?',
+				'What will you work on tomorrow?'
 			])
 		}
 	]);

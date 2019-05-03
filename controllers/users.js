@@ -94,10 +94,10 @@ router.get('/joinCode/:joinCode', async (req, res) => {
 router.put('/', async (req, res) => {
 	try {
 		const id = req.decodedJwt.subject;
-    
+
 		const editedUser = await Users.update(id, req.body);
 		const token = await generateToken(editedUser);
-    
+
 		res.status(200).json({
 			message: 'The user was edited succesfully.',
 			editedUser,
