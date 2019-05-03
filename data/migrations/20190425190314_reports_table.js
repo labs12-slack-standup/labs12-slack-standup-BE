@@ -6,17 +6,17 @@ exports.up = function(knex) {
 
 		tbl.string('reportName', 128).notNullable();
 
-		tbl.string('created_at').notNullable();
+		tbl.datetime('created_at', { precision: 2 }).notNullable();
 
 		tbl.text('schedule');
 
-		tbl.string('scheduleTime');
+		tbl.datetime('scheduleTime', { precision: 2 });
 
 		tbl.string('recurring', 128);
 
 		tbl.text('message');
 
-		tbl.integer('responseTimeLimit');
+		tbl.datetime('responseTimeLimit', { precision: 2 });
 
 		tbl.text('questions');
 	});

@@ -2,7 +2,8 @@ exports.up = function(knex) {
 	return knex.schema.createTable('responses', tbl => {
 		tbl.increments();
 
-		tbl.integer('reportId', 128)
+		tbl
+			.integer('reportId', 128)
 			.unsigned()
 			.notNullable()
 			.references('id')
@@ -10,7 +11,8 @@ exports.up = function(knex) {
 			.onDelete('CASCADE')
 			.onUpdate('CASCADE');
 
-		tbl.integer('userId', 128)
+		tbl
+			.integer('userId', 128)
 			.unsigned()
 			.notNullable()
 			.references('id')
@@ -22,7 +24,7 @@ exports.up = function(knex) {
 
 		tbl.string('answer', 128);
 
-		tbl.string('submitted_date').notNullable();
+		tbl.datetime('submitted_date', { precision: 2 }).notNullable();
 	});
 };
 

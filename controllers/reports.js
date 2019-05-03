@@ -8,8 +8,7 @@ router.get('/', async (req, res) => {
 	try {
 		const reports = await Reports.findByTeam(teamId);
 		if (reports.length === 0) {
-			let message =
-				'No reports by that team were found in the database';
+			let message = 'No reports by that team were found in the database';
 			res.status(200).json({ message, reports });
 		} else {
 			let message = 'The reports were found in the database.';
@@ -34,8 +33,7 @@ router.get('/:reportId', async (req, res) => {
 	try {
 		const report = await Reports.findById(reportId, teamId);
 		if (report) {
-			const message =
-				'The reports were found in the database.';
+			const message = 'The reports were found in the database.';
 			res.status(200).json({
 				message,
 				report: {
@@ -60,15 +58,17 @@ router.get('/:reportId', async (req, res) => {
 
 // Add a report
 router.post('/', adminValidation, async (req, res) => {
+	//destructuring teamId from decoded token
 	const { teamId } = req.decodedJwt;
+	//adding teamId to report object
+	const newReport = { ...req.body, teamId };
 
 	try {
-		const report = await Reports.add(req.body);
+		const report = await Reports.add(newReport);
 		res.status(201).json(report);
 	} catch (error) {
 		res.status(500).json({
-			message:
-				'Sorry, something went wrong while adding the report'
+			message: 'Sorry, something went wrong while adding the report'
 		});
 
 		//sentry call
@@ -76,7 +76,7 @@ router.post('/', adminValidation, async (req, res) => {
 	}
 });
 
-router.delete('/:id', adminValidation, async (req, res) => {
+router.delete('/:id', adminValidation, adminValidation, async (req, res) => {
 	try {
 		const { id } = req.params;
 		const count = await Reports.remove(id);
@@ -89,8 +89,7 @@ router.delete('/:id', adminValidation, async (req, res) => {
 		}
 	} catch (error) {
 		res.status(500).json({
-			message:
-				'Sorry, something went wrong while deleting the report'
+			message: 'Sorry, something went wrong while deleting the report'
 		});
 
 		//sentry call
@@ -99,7 +98,7 @@ router.delete('/:id', adminValidation, async (req, res) => {
 });
 
 //edit later to pull out specific edit fields from the req.body
-router.put('/:reportId', async (req, res) => {
+router.put('/:reportId', adminValidation, async (req, res) => {
 	try {
 		const { reportId } = req.params;
 		const editedReport = await Reports.update(reportId, req.body);
@@ -116,9 +115,9 @@ router.put('/:reportId', async (req, res) => {
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({
-			message:
-				'Sorry, something went wrong while updating the report'
+			message: 'Sorry, something went wrong while updating the report'
 		});
+		//sentry call
 		throw new Error(error);
 	}
 });

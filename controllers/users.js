@@ -49,7 +49,7 @@ router.get('/byuser', async (req, res) => {
 // Get all users for a team by teamId
 router.get('/team', async (req, res) => {
 	const { teamId } = req.decodedJwt;
-
+	
 	try {
 		const users = await Users.findByTeam(teamId);
 

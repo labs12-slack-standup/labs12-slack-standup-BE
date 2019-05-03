@@ -4,7 +4,8 @@ exports.up = function(knex) {
 
 		tbl.integer('teamId');
 
-		tbl.string('email', 128)
+		tbl
+			.string('email', 128)
 			.notNullable()
 			.unique();
 
@@ -16,18 +17,18 @@ exports.up = function(knex) {
 
 		tbl.string('profilePic');
 
-		tbl.string('created_at').notNullable();
+		tbl.datetime('created_at', { precision: 2 }).notNullable();
 
 		tbl.string('timezone').notNullable();
 
 		tbl.string('joinCode');
 
-		tbl.boolean('active')
+		tbl
+			.boolean('active')
 			.defaultTo(true)
 			.notNullable();
 	});
 };
-
 
 exports.down = function(knex) {
 	return knex.schema.dropTableIfExists('users');
