@@ -2,6 +2,7 @@ const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const Users = require('../models/Users');
 const moment = require('moment');
+const axios = require('axios');
 const { generateToken } = require('../helpers/generateToken');
 const admin = require('firebase-admin');
 
@@ -120,5 +121,21 @@ router.post('/firebase', async ({ body }, res) => {
 		throw new Error(error);
 	}
 });
+
+router.get('/slack', async (req, res, next) => {
+	console.log(req.query);
+	const payload = {
+		client_id: process.env.SLACK_CLIENT_ID,
+		client_secret: process.env.SLACK_CLIENT_SECRET,
+		code: req.query.code,
+		redirect_uri: process.env.SLACK_REDIRECT_URI
+	}
+	try {
+		const result = await axios.post('https://slack.com/api/oauth.access', payload);
+		console.log(result.data);
+	} catch (err) {
+		console.log(err);
+	}
+})
 
 module.exports = router;
