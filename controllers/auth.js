@@ -154,6 +154,7 @@ router.get('/slack/', authenticate, async (req, res, next) => {
 			const token = generateToken(user);
 			return res.status(202).json({ token });
 		} else {
+			
 			// If resource slackToken !== null, then create token Obj
 			const user = { subject, roles, teamId, ...slackObj }
 			const token = generateToken(user);
