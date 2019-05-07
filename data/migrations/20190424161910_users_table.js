@@ -27,6 +27,12 @@ exports.up = function(knex) {
 			.boolean('active')
 			.defaultTo(true)
 			.notNullable();
+
+		tbl.text('slackToken').unique();
+
+		tbl.string('slackUserId');
+
+		tbl.string('slackTeamId');
 	});
 };
 
