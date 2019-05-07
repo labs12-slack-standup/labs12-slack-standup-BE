@@ -11,7 +11,6 @@
 	"license": "MIT",
 	"dependencies": {
 		"@sentry/node": "^5.1.0",
-		"apollo-server": "^2.4.8",
 		"axios": "^0.18.0",
 		"bcryptjs": "^2.4.3",
 		"body-parser": "^1.18.3",
@@ -20,8 +19,6 @@
 		"dotenv": "^7.0.0",
 		"faker": "^4.1.0",
 		"firebase-admin": "^7.3.0",
-		"google-auth-library": "^3.1.2",
-		"graphql": "^14.2.1",
 		"helmet": "^3.16.0",
 		"jsonwebtoken": "^8.5.1",
 		"jstz": "^2.1.1",
@@ -31,6 +28,7 @@
 		"moment-timezone": "^0.5.25",
 		"morgan": "^1.9.1",
 		"pg": "^7.10.0",
+		"qs": "^6.7.0",
 		"sqlite3": "^4.0.6",
 		"uuidv4": "^4.0.0"
 	},
