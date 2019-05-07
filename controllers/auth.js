@@ -147,7 +147,6 @@ router.get('/slack/', authenticate, async (req, res, next) => {
 			slackUserId: data.user_id,
 			slackTeamId: data.team_id
 		}
-		
 		if (resource.slackObj === null) {
 			// console.log(slackObj);
 			await Users.update(subject, slackObj);
