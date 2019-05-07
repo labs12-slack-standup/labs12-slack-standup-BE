@@ -6,6 +6,7 @@ const axios = require('axios');
 const qs = require('qs');
 const { generateToken } = require('../helpers/generateToken');
 const admin = require('firebase-admin');
+const authenticate = require('../middleware/authenticate');
 
 router.post('/register', async (req, res) => {
 	try {
@@ -123,7 +124,9 @@ router.post('/firebase', async ({ body }, res) => {
 	}
 });
 
-router.get('/slack/', async (req, res, next) => {
+router.get('/slack/', authenticate, async (req, res, next) => {
+	console.log('128:', req.decodedJwt);
+	const { subject, roles, teamId } = req.decodedJwt;
 	const payload = qs.stringify({
 		client_id: process.env.SLACK_CLIENT_ID,
 		client_secret: process.env.SLACK_CLIENT_SECRET,
@@ -134,8 +137,29 @@ router.get('/slack/', async (req, res, next) => {
 		'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
 	};
 	try {
+		// Make Auth request with Slack
 		const { data } = await axios.post('https://slack.com/api/oauth.access', payload, headers);
-		console.log(data);
+		// Query the users table for User resource
+		const resource = await Users.findById(subject);
+		// If resource slackToken === null, then build slackObj to update the user resource
+		const slackObj = {
+			slackToken: data.access_token,
+			slackUserId: data.user_id,
+			slackTeamId: data.team_id
+		}
+		if (resource.slackObj === null) {
+			// console.log(slackObj);
+			await Users.update(subject, slackObj);
+			const user = { subject, roles, teamId, ...slackObj }
+			const token = generateToken(user);
+			return res.status(202).json({ token });
+		} else {
+			
+			// If resource slackToken !== null, then create token Obj
+			const user = { subject, roles, teamId, ...slackObj }
+			const token = generateToken(user);
+			return res.status(202).json({ token });
+		}
 	} catch (err) {
 		console.log(err);
 	}
