@@ -24,7 +24,10 @@ exports.seed = function(knex) {
 				'What did you get done today?',
 				'Did you finish your goals for today?',
 				'What will you work on tomorrow?'
-			])
+			]),
+			slackChannelName: null,
+			slackChannelId: null,
+			nextPublishDate: null
 		},
 		{
 			teamId: 2,
@@ -48,7 +51,10 @@ exports.seed = function(knex) {
 				'What did you get done today?',
 				'Did you finish your goals for today?',
 				'What will you work on tomorrow?'
-			])
+			]),
+			slackChannelName: null,
+			slackChannelId: null,
+			nextPublishDate: null
 		},
 		{
 			teamId: 3,
@@ -72,7 +78,10 @@ exports.seed = function(knex) {
 				'What did you get done today?',
 				'Did you finish your goals for today?',
 				'What will you work on tomorrow?'
-			])
+			]),
+			slackChannelName: null,
+			slackChannelId: null,
+			nextPublishDate: null
 		},
 		{
 			teamId: 4,
@@ -96,7 +105,10 @@ exports.seed = function(knex) {
 				'What did you get done today?',
 				'Did you finish your goals for today?',
 				'What will you work on tomorrow?'
-			])
+			]),
+			slackChannelName: null,
+			slackChannelId: null,
+			nextPublishDate: null
 		},
 		{
 			teamId: 5,
@@ -120,7 +132,10 @@ exports.seed = function(knex) {
 				'What did you get done today?',
 				'Did you finish your goals for today?',
 				'What will you work on tomorrow?'
-			])
+			]),
+			slackChannelName: null,
+			slackChannelId: null,
+			nextPublishDate: null
 		}
 	]);
 };

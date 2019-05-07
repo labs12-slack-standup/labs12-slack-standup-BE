@@ -19,6 +19,12 @@ exports.up = function(knex) {
 		tbl.datetime('responseTimeLimit', { precision: 2 });
 
 		tbl.text('questions');
+
+		tbl.string('slackChannelName');
+
+		tbl.string('slackChannelId');
+
+		tbl.datetime('nextPublishDate', { precision: 2 });
 	});
 };
 

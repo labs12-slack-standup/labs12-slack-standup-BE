@@ -10,8 +10,7 @@ exports.seed = function(knex) {
 		let count = 1;
 		const joinCode = length => {
 			return Math.round(
-				Math.pow(36, length + 1) -
-					Math.random() * Math.pow(36, length)
+				Math.pow(36, length + 1) - Math.random() * Math.pow(36, length)
 			)
 				.toString(36)
 				.slice(1);
@@ -28,7 +27,10 @@ exports.seed = function(knex) {
 				created_at: moment().format(),
 				timezone: jstz.determine().name(),
 				joinCode: count === 1 ? joinCode(6) : null,
-				active: true
+				active: true,
+				slackToken: null,
+				slackUserId: null,
+				slackTeamId: null
 			});
 
 			if (count + 1 === 6) {
