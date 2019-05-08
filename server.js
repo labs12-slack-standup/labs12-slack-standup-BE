@@ -10,6 +10,7 @@ const authController = require('./controllers/auth');
 const userController = require('./controllers/users');
 const reportController = require('./controllers/reports');
 const responseController = require('./controllers/responses');
+const slackController = require('./controllers/slack');
 
 // initializations
 const server = express();
@@ -26,6 +27,7 @@ server.use('/api/auth', authController);
 server.use('/api/users', authenticate, userController);
 server.use('/api/reports', authenticate, reportController);
 server.use('/api/responses', authenticate, responseController);
+server.use('/api/slack', authenticate, slackController);
 
 // error reporting middleware (Must be after all requests)
 errorMiddleware(server);
