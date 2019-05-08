@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const Sentry = require('@sentry/node');
 const { button } = require('./middleware/slackComponents/slackButton');
-button();
+button(358250058);
 
 const middleware = require('./middleware/config');
 const authenticate = require('./middleware/authenticate');
@@ -29,6 +29,7 @@ server.use('/api/auth', authController);
 server.use('/api/users', authenticate, userController);
 server.use('/api/reports', authenticate, reportController);
 server.use('/api/responses', authenticate, responseController);
+// Changes authentication to handle requests from slack
 server.use('/api/slack', slackController);
 
 // error reporting middleware (Must be after all requests)
