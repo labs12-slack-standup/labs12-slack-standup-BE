@@ -82,6 +82,7 @@ router.post('/', adminValidation, async (req, res) => {
 });
 
 router.delete('/:id', adminValidation, async (req, res) => {
+	const { teamId } = req.decodedJwt;
 	try {
 		const { id } = req.params;
 		const count = await Reports.remove(id);
@@ -89,8 +90,9 @@ router.delete('/:id', adminValidation, async (req, res) => {
 			const message = "This report doesn't exist.";
 			res.status(404).json({ message });
 		} else {
+			const reports = await Reports.findByTeam(teamId);
 			const message = 'The report was successfully deleted.';
-			res.status(202).json({ message });
+			res.status(202).json({ message, reports });
 		}
 	} catch (error) {
 		res.status(500).json({

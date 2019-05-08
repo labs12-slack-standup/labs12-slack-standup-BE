@@ -18,13 +18,14 @@ router.get('/channels', async (req, res, next) => {
     const token = req.decodedJwt.slackToken;
     const endpoint = `https://slack.com/api/conversations.list?token=${token}`;
     const { data } = await axios.get(endpoint);
-    // If the response is successful the data object contains a channels array
-    // There are more properties in each channel object but we're only taking what's needed.
-    const channels = data.channels.map(channel => ({
-      id: channel.id,
-      name: channel.name
-    }));
-    res.status(200).json(channels);
+    // If the response is successful and the data object contains a channels array extract the id and name properties and return as json
+    if (data.channels) {
+      const channels = data.channels.map(channel => ({
+        id: channel.id,
+        name: channel.name
+      }));
+      res.status(200).json(channels);
+    }
   } catch (err) {
     console.log(err);
   }
