@@ -2,6 +2,9 @@ const router = require('express').Router();
 const axios = require('axios');
 const qs = require('qs');
 const Users = require('../models/Users');
+const Responses = require('../models/Responses');
+const moment = require('moment');
+
 const confirmation = require('../middleware/slackComponents/slackConfirmation');
 const authenticate = require('../middleware/authenticate');
 
@@ -43,7 +46,7 @@ router.get('/channels', authenticate, async (req, res, next) => {
 router.post('/sendReport', slackVerification, async (req, res) => {
 	//console.log('new request');
 	const payload = JSON.parse(req.body.payload);
-	console.log(payload);
+	//console.log(payload);
 	const { type, user } = payload;
 	//console.log(value);
 
@@ -78,17 +81,33 @@ router.post('/sendReport', slackVerification, async (req, res) => {
 		// immediately respond with a empty 200 response to let
 		// Slack know the command was received
 		//console.log('got in submission');
+		console.log(payload);
 		const { submission } = payload;
 
 		const questions = Object.keys(submission).filter(
 			item => item !== 'send_by'
 		);
 
-		const answers = Object.values(submission);
+		// Revisit, can filter with dynamic user id
+		let answers = Object.values(submission);
+
+		answers.splice(answers.length - 1, 1);
+
 		try {
 			//console.log('got here');
 			res.send('');
 			confirmation.sendConfirmation(user.id, answers, questions, submission);
+
+			const responseArr = answers.map((answer, index) => ({
+				reportId: payload.state,
+				userId: id,
+				question: questions[index],
+				answer: answer,
+				submitted_date: moment().format()
+			}));
+			console.log(responseArr);
+			await Responses.add(responseArr);
+			res.status(200);
 		} catch (error) {
 			console.log(error);
 		}
