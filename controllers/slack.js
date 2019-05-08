@@ -41,29 +41,32 @@ router.get('/channels', authenticate, async (req, res, next) => {
 });
 
 router.post('/sendReport', slackVerification, async (req, res) => {
+	//console.log('new request');
 	const payload = JSON.parse(req.body.payload);
 	console.log(payload);
-	const { type, user, submission } = payload;
-	const value = JSON.parse(payload.actions[0].value);
+	const { type, user } = payload;
 	//console.log(value);
-	const questions = JSON.parse(value.questions);
-	//console.log(questions);
-	const elements = questions.map((question, index) => {
-		let object = {
-			label: question,
-			type: 'textarea',
-			name: index,
-			value: payload.message.text
-		};
-		return object;
-	});
-	//console.log(elements);
 
 	const slackUserId = user.id;
 	const { id, fullName } = await Users.findBySlackId(slackUserId);
 	if (type === 'block_actions') {
 		//console.log('am I an action?');
 		// Get user info of the person who posted the original message from the payload
+		const value = JSON.parse(payload.actions[0].value);
+
+		const questions = JSON.parse(value.questions);
+		//console.log(questions);
+		const elements = questions.map((question, index) => {
+			let object = {
+				label: question,
+				type: 'textarea',
+				name: question,
+				value: payload.message.text
+			};
+			return object;
+		});
+		//console.log(elements);
+
 		try {
 			openDialog(payload, fullName, value, elements);
 		} catch (error) {
@@ -72,20 +75,31 @@ router.post('/sendReport', slackVerification, async (req, res) => {
 				.json({ message: 'Something went wrong while getting the questions.' });
 		}
 	} else if (type === 'dialog_submission') {
-		console.log('got here');
-		console.log(payload);
-		console.log(id);
-
 		// immediately respond with a empty 200 response to let
 		// Slack know the command was received
-		res.send('');
+		//console.log('got in submission');
+		const { submission } = payload;
+
+		const questions = Object.keys(submission).filter(
+			item => item !== 'send_by'
+		);
+
+		const answers = Object.values(submission);
+		try {
+			//console.log('got here');
+			res.send('');
+			confirmation.sendConfirmation(user.id, answers, questions, submission);
+		} catch (error) {
+			console.log(error);
+		}
+
 		// DM the user a confirmation message
-		confirmation.sendConfirmation(user.id, submission, questions);
 	}
 });
 
 // open the dialog by calling dialogs.open method and sending the payload
 const openDialog = async (payload, real_name, value, elements) => {
+	console.log(value.id);
 	const dialogData = {
 		token: process.env.SLACK_ACCESS_TOKEN,
 		trigger_id: payload.trigger_id,
@@ -93,6 +107,7 @@ const openDialog = async (payload, real_name, value, elements) => {
 			title: value.reportName,
 			callback_id: 'report',
 			submit_label: 'report',
+			state: value.id.toString(),
 			elements: [
 				...elements,
 				{

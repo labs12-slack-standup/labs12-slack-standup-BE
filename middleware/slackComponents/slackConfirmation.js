@@ -13,14 +13,15 @@ const apiUrl = 'https://slack.com/api';
 // DM works for the user installed the app, and only after other user manually add the app
 // We are still investing the issue
 
-const sendConfirmation = (userId, data, questions) => {
+const sendConfirmation = (userId, answers, questions, submission) => {
 	const fields = questions.map((question, index) => {
 		let object = {
 			title: question,
-			value: data[index]
+			value: answers[index]
 		};
 		return object;
 	});
+	console.log(fields);
 	let attachments = [
 		{
 			title: 'Report was submitted successfully!',
@@ -29,7 +30,7 @@ const sendConfirmation = (userId, data, questions) => {
 				...fields,
 				{
 					title: 'Posted by',
-					value: data.send_by,
+					value: submission.send_by,
 					short: true
 				}
 			]
