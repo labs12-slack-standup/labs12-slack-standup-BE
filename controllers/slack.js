@@ -14,16 +14,10 @@ const {
 
 const apiUrl = 'https://slack.com/api';
 
-// const payload = qs.stringify({
-//   client_id: process.env.SLACK_CLIENT_ID,
-//   client_secret: process.env.SLACK_CLIENT_SECRET,
-//   code: req.query.code,
-//   redirect_uri: process.env.SLACK_REDIRECT_URI
-// })
-
 // This is the endpoint that returns the list of channels available for a user
 // this endpoint is requested when a user wants to create a new reports, on ComponentDidMount.
-router.get('/channels', async (req, res, next) => {
+router.get('/channels', authenticate, async (req, res, next) => {
+	console.log(req.decodedJwt);
   try {
     // We need to construct a url with the users slackToken appended as a query param
     const token = req.decodedJwt.slackToken;
