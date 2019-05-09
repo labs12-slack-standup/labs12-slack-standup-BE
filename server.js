@@ -9,7 +9,7 @@ const { button } = require('./middleware/slackComponents/slackButton');
 
 //run every 30 minutes '0 */30 * * * *'
 cron.schedule('0-59 */1 * * * *', () => {
-	filterReports();
+	//filterReports();
 });
 
 const middleware = require('./middleware/config');
