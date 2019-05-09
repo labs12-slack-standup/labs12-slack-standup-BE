@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Reports = require('../models/Reports');
 const { adminValidation } = require('../middleware/validation/reports');
+const formatDateNextPublishedDate = require('../helpers/nextPublishedDate');
 
 // This route will return all reports by Team ID
 router.get('/', async (req, res) => {
@@ -62,16 +63,24 @@ router.post('/', adminValidation, async (req, res) => {
 	//destructuring teamId from decoded token
 	const { teamId } = req.decodedJwt;
 
-	//adding teamId to report object
-
-	const newReport = { ...req.body, teamId };
+	// calculate next publish date;
+	const schedule = JSON.parse(req.body.schedule);
+	// req.body.created_at is a placeholder value, we need check if the
+	// report needs publishing today, if true format today's date and time
+	const date = req.body.created_at;
+	// formatDateNextPublishedDate will only formats a date in the future and it's primary
+	// use is for updating reports extracted from the cron job.
+	const nextPublishedDate = formatDateNextPublishedDate(date, schedule);
+	
+	const newReport = { ...req.body, teamId, nextPublishedDate };
 
 	try {
-		console.log('before');
 		const report = await Reports.add(newReport);
+		const reports = await Reports.findByTeam(teamId);
 		console.log('report:', report);
-		res.status(201).json(report);
+		res.status(201).json(reports);
 	} catch (error) {
+		console.log(error);
 		res.status(500).json({
 			message: 'Sorry, something went wrong while adding the report'
 		});
