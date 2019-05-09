@@ -14,6 +14,9 @@ const reportController = require('./controllers/reports');
 const responseController = require('./controllers/responses');
 const slackController = require('./controllers/slack');
 
+
+
+
 // initializations
 const server = express();
 Sentry.init({
@@ -34,6 +37,7 @@ server.use('/api/slack', slackController);
 
 // error reporting middleware (Must be after all requests)
 errorMiddleware(server);
+
 
 server.get('/', (req, res) => {
 	res.status(200).json({ message: 'Sanity check' });
