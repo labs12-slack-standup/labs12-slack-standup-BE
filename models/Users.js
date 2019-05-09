@@ -7,6 +7,7 @@ module.exports = {
 	findByRole,
 	findByJoinCode,
 	findById,
+	findBySlackId,
 	findByTeam,
 	findByEmail,
 	update,
@@ -43,6 +44,14 @@ function findByEmail(email) {
 // Get user by filter
 function findBy(filter) {
 	return db('users').where(filter);
+}
+
+// Get user by slack Id
+async function findBySlackId(slackUserId) {
+	const response = await db('users')
+		.where({ slackUserId })
+		.first();
+	return response;
 }
 
 // Get user by role
