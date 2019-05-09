@@ -3,11 +3,12 @@ const sgMail = require('@sendgrid/mail');
 
 //pull this from .env
 sgMail.setApiKey(
-	'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'
+	process.env.SENDGRID_API_KEY
 );
 
 router.post('/', async (req, res) => {
 	try {
+        console.log(req.body)
 		const { emails, joinCode } = req.body;
 		const msg = {
 			to: emails,
