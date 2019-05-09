@@ -127,7 +127,7 @@ router.post('/:reportId', async (req, res) => {
 			reportId,
 			userId: subject,
 			question: body.question,
-			answer: body.answer,
+			answer: body.response,
 			submitted_date: moment().format()
 		}));
 
