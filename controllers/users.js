@@ -135,6 +135,7 @@ router.delete('/', async (req, res) => {
 	}
 });
 
+// This is for managers to inactivate the user account of team members when they leave
 router.put('/:userId', adminValidation, async (req, res) => {
 	try {
 		const { userId } = req.params;
