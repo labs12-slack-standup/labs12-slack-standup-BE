@@ -3,13 +3,11 @@ const express = require('express');
 const Sentry = require('@sentry/node');
 const cron = require('node-cron');
 
-const { filterReports } = require('./helpers/emailReports');
-const { button } = require('./middleware/slackComponents/slackButton');
-//button(358250058);
+const { slackReports } = require('./helpers/emailReports');
 
 //run every 30 minutes '0 */30 * * * *'
-cron.schedule('0-59 */1 * * * *', () => {
-	//filterReports();
+cron.schedule('0 */30 * * * *', () => {
+	slackReports();
 });
 
 const middleware = require('./middleware/config');

@@ -72,9 +72,10 @@ router.post('/', adminValidation, async (req, res) => {
 	// formatDateNextPublishedDate will only formats a date in the future and it's primary
 	// use is for updating reports extracted from the cron job.
 	const nextPublishDate = formatDateNextPublishedDate(date, schedule);
-	
-	const newReport = { ...req.body, teamId, nextPublishDate };
 
+
+	const newReport = { ...req.body, teamId, nextPublishDate };
+	console.log(newReport);
 	try {
 		const report = await Reports.add(newReport);
 		const reports = await Reports.findByTeam(teamId);
