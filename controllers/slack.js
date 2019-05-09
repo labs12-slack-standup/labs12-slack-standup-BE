@@ -23,42 +23,39 @@ const apiUrl = 'https://slack.com/api';
 
 // This is the endpoint that returns the list of channels available for a user
 // this endpoint is requested when a user wants to create a new reports, on ComponentDidMount.
-router.get('/channels', authenticate, async (req, res, next) => {
-	try {
-		// We need to construct a url with the users slackToken appended as a query param
-		const token = req.decodedJwt.slackToken;
-		console.log(token);
-		const endpoint = `https://slack.com/api/conversations.list?token=${token}`;
-		const { data } = await axios.get(endpoint);
-		console.log(data);
-		// If the response is successful the data object contains a channels array
-		// There are more properties in each channel object but we're only taking what's needed.
-		const channels = data.channels.map(channel => ({
-			id: channel.id,
-			name: channel.name
-		}));
-		res.status(200).json(channels);
-	} catch (err) {
-		console.log(err);
-	}
+router.get('/channels', async (req, res, next) => {
+  try {
+    // We need to construct a url with the users slackToken appended as a query param
+    const token = req.decodedJwt.slackToken;
+    const endpoint = `https://slack.com/api/conversations.list?token=${token}`;
+    const { data } = await axios.get(endpoint);
+    // If the response is successful and the data object contains a channels array extract the id and name properties and return as json
+    if (data.channels) {
+      const channels = data.channels.map(channel => ({
+        id: channel.id,
+        name: channel.name
+      }));
+      res.status(200).json(channels);
+    }
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 router.post('/sendReport', slackVerification, async (req, res) => {
-	//console.log('new request');
 	const payload = JSON.parse(req.body.payload);
-	//console.log(payload);
 	const { type, user } = payload;
-	//console.log(value);
 
 	const slackUserId = user.id;
 	const { id, fullName } = await Users.findBySlackId(slackUserId);
+
 	if (type === 'block_actions') {
-		//console.log('am I an action?');
-		// Get user info of the person who posted the original message from the payload
 		const value = JSON.parse(payload.actions[0].value);
 
+		//pull questions out of the value and put them in an array
 		const questions = JSON.parse(value.questions);
-		//console.log(questions);
+
+		//map through questions and create an interactive element for each
 		const elements = questions.map((question, index) => {
 			let object = {
 				label: question,
@@ -68,9 +65,9 @@ router.post('/sendReport', slackVerification, async (req, res) => {
 			};
 			return object;
 		});
-		//console.log(elements);
 
 		try {
+			//call openDialog to send modal in DM
 			openDialog(payload, fullName, value, elements);
 		} catch (error) {
 			res
@@ -78,12 +75,10 @@ router.post('/sendReport', slackVerification, async (req, res) => {
 				.json({ message: 'Something went wrong while getting the questions.' });
 		}
 	} else if (type === 'dialog_submission') {
-		// immediately respond with a empty 200 response to let
-		// Slack know the command was received
-		//console.log('got in submission');
 		console.log(payload);
 		const { submission } = payload;
 
+		//Submissions comes in as { question: answer ... send_by: full_name }. This strips out the questions
 		const questions = Object.keys(submission).filter(
 			item => item !== 'send_by'
 		);
@@ -94,10 +89,13 @@ router.post('/sendReport', slackVerification, async (req, res) => {
 		answers.splice(answers.length - 1, 1);
 
 		try {
-			//console.log('got here');
+			//immediately respond with an empty 200 response to let slack know command was received
 			res.send('');
+
+			//send confirmation of submission back to user
 			confirmation.sendConfirmation(user.id, answers, questions, submission);
 
+			//create an array of response objects
 			const responseArr = answers.map((answer, index) => ({
 				reportId: payload.state,
 				userId: id,
@@ -105,14 +103,16 @@ router.post('/sendReport', slackVerification, async (req, res) => {
 				answer: answer,
 				submitted_date: moment().format()
 			}));
-			console.log(responseArr);
+
+			//insert array of response objects to response table
 			await Responses.add(responseArr);
+
+			//not sure we need this
 			res.status(200);
 		} catch (error) {
+			//likely need better error handling
 			console.log(error);
 		}
-
-		// DM the user a confirmation message
 	}
 });
 
