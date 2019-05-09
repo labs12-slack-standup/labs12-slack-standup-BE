@@ -35,6 +35,7 @@ router.get('/:reportId', async (req, res) => {
 		const report = await Reports.findByIdAndTeamId(reportId, teamId);
 		if (report) {
 			const message = 'The reports were found in the database.';
+			console.log(report);
 			res.status(200).json({
 				message,
 				report: {
@@ -71,6 +72,7 @@ router.post('/', adminValidation, async (req, res) => {
 	// formatDateNextPublishedDate will only formats a date in the future and it's primary
 	// use is for updating reports extracted from the cron job.
 	const nextPublishDate = formatDateNextPublishedDate(date, schedule);
+
 
 	const newReport = { ...req.body, teamId, nextPublishDate };
 	console.log(newReport);
@@ -115,14 +117,14 @@ router.delete('/:id', adminValidation, async (req, res) => {
 
 //edit later to pull out specific edit fields from the req.body
 router.put('/:reportId', adminValidation, async (req, res) => {
+	const { teamId } = req.decodedJwt;
 	try {
 		const { reportId } = req.params;
-		const editedReport = await Reports.update(reportId, req.body);
+		const editedReport = await Reports.update(reportId, teamId, req.body);
+		console.log('report:', editedReport);
 		if (editedReport) {
-			res.status(200).json({
-				message: 'The report was edited succesfully.',
-				editedReport
-			});
+			const reports = await Reports.findByTeam(teamId);
+			res.status(201).json(reports);
 		} else {
 			res.status(404).json({
 				message: 'The report is not found'
