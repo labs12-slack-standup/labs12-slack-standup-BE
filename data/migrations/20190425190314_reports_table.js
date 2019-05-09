@@ -25,6 +25,11 @@ exports.up = function(knex) {
 		tbl.string('slackChannelId');
 
 		tbl.datetime('nextPublishDate', { precision: 2 });
+
+		tbl
+			.boolean('active')
+			.defaultTo(true)
+			.notNullable();
 	});
 };
 

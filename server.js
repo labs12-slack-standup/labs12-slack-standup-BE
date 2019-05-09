@@ -1,8 +1,16 @@
 require('dotenv').config();
 const express = require('express');
 const Sentry = require('@sentry/node');
+const cron = require('node-cron');
+
+const { filterReports } = require('./helpers/emailReports');
 const { button } = require('./middleware/slackComponents/slackButton');
-button(358250058);
+//button(358250058);
+
+//run every 30 minutes '0 */30 * * * *'
+cron.schedule('0-59 */1 * * * *', () => {
+	//filterReports();
+});
 
 const middleware = require('./middleware/config');
 const authenticate = require('./middleware/authenticate');

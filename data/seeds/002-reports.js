@@ -15,7 +15,7 @@ exports.seed = function(knex) {
 				'Saturday',
 				'Sunday'
 			]),
-			scheduleTime: '00:00',
+			scheduleTime: '14:00',
 			recurring: '1week',
 			message: 'Please fill out the report',
 			responseTimeLimit: moment().format(),
@@ -27,7 +27,8 @@ exports.seed = function(knex) {
 			]),
 			slackChannelName: null,
 			slackChannelId: null,
-			nextPublishDate: null
+			nextPublishDate: '2019-05-09 14:00:00',
+			active: true
 		},
 		{
 			teamId: 2,
@@ -42,7 +43,7 @@ exports.seed = function(knex) {
 				'Saturday',
 				'Sunday'
 			]),
-			scheduleTime: '00:00',
+			scheduleTime: '15:00',
 			recurring: '1week',
 			message: 'Please fill out the report',
 			responseTimeLimit: moment().format(),
@@ -54,7 +55,8 @@ exports.seed = function(knex) {
 			]),
 			slackChannelName: null,
 			slackChannelId: null,
-			nextPublishDate: null
+			nextPublishDate: '2019-05-09 15:00:00',
+			active: true
 		},
 		{
 			teamId: 3,
@@ -69,7 +71,7 @@ exports.seed = function(knex) {
 				'Saturday',
 				'Sunday'
 			]),
-			scheduleTime: '00:00',
+			scheduleTime: '16:00',
 			recurring: '1week',
 			message: 'Please fill out the report',
 			responseTimeLimit: moment().format(),
@@ -81,7 +83,8 @@ exports.seed = function(knex) {
 			]),
 			slackChannelName: null,
 			slackChannelId: null,
-			nextPublishDate: null
+			nextPublishDate: '2019-05-09 16:00:00',
+			active: true
 		},
 		{
 			teamId: 4,
@@ -96,7 +99,7 @@ exports.seed = function(knex) {
 				'Saturday',
 				'Sunday'
 			]),
-			scheduleTime: '00:00',
+			scheduleTime: '17:00',
 			recurring: '1week',
 			message: 'Please fill out the report',
 			responseTimeLimit: moment().format(),
@@ -108,7 +111,8 @@ exports.seed = function(knex) {
 			]),
 			slackChannelName: null,
 			slackChannelId: null,
-			nextPublishDate: null
+			nextPublishDate: '2019-05-09 17:00:00',
+			active: true
 		},
 		{
 			teamId: 5,
@@ -123,7 +127,7 @@ exports.seed = function(knex) {
 				'Saturday',
 				'Sunday'
 			]),
-			scheduleTime: '00:00',
+			scheduleTime: '18:00',
 			recurring: '1week',
 			message: 'Please fill out the report',
 			responseTimeLimit: moment().format(),
@@ -135,7 +139,8 @@ exports.seed = function(knex) {
 			]),
 			slackChannelName: null,
 			slackChannelId: null,
-			nextPublishDate: null
+			nextPublishDate: '2019-05-09 14:00:00',
+			active: true
 		}
 	]);
 };
