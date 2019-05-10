@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Reports = require('../models/Reports');
 const { adminValidation } = require('../middleware/validation/reports');
+const formatDateNextPublishedDate = require('../helpers/nextPublishedDate');
 
 // This route will return all reports by Team ID
 router.get('/', async (req, res) => {
@@ -34,6 +35,7 @@ router.get('/:reportId', async (req, res) => {
 		const report = await Reports.findByIdAndTeamId(reportId, teamId);
 		if (report) {
 			const message = 'The reports were found in the database.';
+			console.log(report);
 			res.status(200).json({
 				message,
 				report: {
@@ -62,16 +64,25 @@ router.post('/', adminValidation, async (req, res) => {
 	//destructuring teamId from decoded token
 	const { teamId } = req.decodedJwt;
 
-	//adding teamId to report object
+	// calculate next publish date;
+	const schedule = JSON.parse(req.body.schedule);
+	// req.body.created_at is a placeholder value, we need check if the
+	// report needs publishing today, if true format today's date and time
+	const date = req.body.created_at;
+	// formatDateNextPublishedDate will only formats a date in the future and it's primary
+	// use is for updating reports extracted from the cron job.
+	const nextPublishDate = formatDateNextPublishedDate(date, schedule);
 
-	const newReport = { ...req.body, teamId };
 
+	const newReport = { ...req.body, teamId, nextPublishDate };
+	console.log(newReport);
 	try {
-		console.log('before');
 		const report = await Reports.add(newReport);
+		const reports = await Reports.findByTeam(teamId);
 		console.log('report:', report);
-		res.status(201).json(report);
+		res.status(201).json(reports);
 	} catch (error) {
+		console.log(error);
 		res.status(500).json({
 			message: 'Sorry, something went wrong while adding the report'
 		});
@@ -82,6 +93,7 @@ router.post('/', adminValidation, async (req, res) => {
 });
 
 router.delete('/:id', adminValidation, async (req, res) => {
+	const { teamId } = req.decodedJwt;
 	try {
 		const { id } = req.params;
 		const count = await Reports.remove(id);
@@ -89,8 +101,9 @@ router.delete('/:id', adminValidation, async (req, res) => {
 			const message = "This report doesn't exist.";
 			res.status(404).json({ message });
 		} else {
+			const reports = await Reports.findByTeam(teamId);
 			const message = 'The report was successfully deleted.';
-			res.status(202).json({ message });
+			res.status(202).json({ message, reports });
 		}
 	} catch (error) {
 		res.status(500).json({
@@ -104,14 +117,14 @@ router.delete('/:id', adminValidation, async (req, res) => {
 
 //edit later to pull out specific edit fields from the req.body
 router.put('/:reportId', adminValidation, async (req, res) => {
+	const { teamId } = req.decodedJwt;
 	try {
 		const { reportId } = req.params;
-		const editedReport = await Reports.update(reportId, req.body);
+		const editedReport = await Reports.update(reportId, teamId, req.body);
+		console.log('report:', editedReport);
 		if (editedReport) {
-			res.status(200).json({
-				message: 'The report was edited succesfully.',
-				editedReport
-			});
+			const reports = await Reports.findByTeam(teamId);
+			res.status(201).json(reports);
 		} else {
 			res.status(404).json({
 				message: 'The report is not found'

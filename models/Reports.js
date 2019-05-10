@@ -58,9 +58,9 @@ async function findByUserId(userId) {
 }
 
 // Update report
-async function update(id, report) {
+async function update(id, teamId, report) {
 	await db('reports')
-		.where({ id })
+		.where({ id, teamId })
 		.update(report);
 
 	return findById(id);

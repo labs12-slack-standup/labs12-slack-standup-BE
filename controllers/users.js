@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Users = require('../models/Users');
 const { generateToken } = require('../helpers/generateToken');
+const { adminValidation } = require('../middleware/validation/reports');
 
 // Get all users
 router.get('/', async (req, res) => {
@@ -32,14 +33,12 @@ router.get('/byuser', async (req, res) => {
 			});
 		} else {
 			res.status(404).json({
-				message:
-					'Sorry, the user requested does not exist'
+				message: 'Sorry, the user requested does not exist'
 			});
 		}
 	} catch (error) {
 		res.status(500).json({
-			message:
-				'Sorry but something went wrong while retrieving the user.'
+			message: 'Sorry but something went wrong while retrieving the user.'
 		});
 
 		throw new Error(error);
@@ -49,7 +48,7 @@ router.get('/byuser', async (req, res) => {
 // Get all users for a team by teamId
 router.get('/team', async (req, res) => {
 	const { teamId } = req.decodedJwt;
-	
+
 	try {
 		const users = await Users.findByTeam(teamId);
 
@@ -111,8 +110,7 @@ router.put('/', async (req, res) => {
 		});
 	} catch (error) {
 		res.status(500).json({
-			message:
-				'Sorry, there was an error when updating the user.'
+			message: 'Sorry, there was an error when updating the user.'
 		});
 		throw new Error(error);
 	}
@@ -127,8 +125,7 @@ router.delete('/', async (req, res) => {
 			await Users.remove(id);
 
 			res.status(200).json({
-				message:
-					'The user has been successfully removed.'
+				message: 'The user has been successfully removed.'
 			});
 		} else {
 			res.status(404).json({
@@ -140,6 +137,26 @@ router.delete('/', async (req, res) => {
 			message: 'Sorry, there was an error deleting the user.'
 		});
 
+		throw new Error(error);
+	}
+});
+
+// This is for managers to inactivate the user account of team members when they leave
+router.put('/:userId', adminValidation, async (req, res) => {
+	try {
+		const { userId } = req.params;
+		const editedUser = await Users.update(userId, req.body);
+		const token = await generateToken(editedUser);
+
+		res.status(200).json({
+			message: 'The user was editied successfully',
+			editedUser,
+			token
+		});
+	} catch (error) {
+		res.status(500).json({
+			message: 'Sorry, there was an error when updating the user.'
+		});
 		throw new Error(error);
 	}
 });
