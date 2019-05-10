@@ -11,6 +11,7 @@ module.exports = {
 	findByTeam,
 	findByEmail,
 	update,
+	updateTeamId,
 	remove
 };
 
@@ -76,12 +77,23 @@ async function findByTeam(teamId) {
 
 // Update user
 async function update(id, user) {
-	await db('users')
+	console.log(id, user)
+	const editedUser = await db('users')
 		.where({ id })
 		.update(user);
-
+	console.log('editedUser', editedUser)
 	return findById(id);
 }
+
+async function updateTeamId(id, teamId) {
+	console.log(id, teamId)
+	const editedUser = await db('users')
+		.where({ id })
+		.update({teamId});
+	console.log('editedUser', editedUser)
+	return findById(id);
+}
+
 
 // Delete user
 function remove(id) {
