@@ -7,13 +7,13 @@ const Users = require('../models/Users');
 const { button } = require('../middleware/slackComponents/slackButton');
 
 const daysToNumbers = {
+	0: 'Sunday',
 	1: 'Monday',
 	2: 'Tuesday',
 	3: 'Wednesday',
 	4: 'Thursday',
 	5: 'Friday',
-	6: 'Saturday',
-	7: 'Sunday'
+	6: 'Saturday'
 };
 
 //Get and filter all reports going out at this time
@@ -36,8 +36,8 @@ const filterReports = async () => {
 		const currentMin = getMinutes(currentDate);
 
 		//Check to see if the current hour/min matches the hour/min of the report
-		const sameHours = hours === currentHour ? true : false;
-		const sameMin = minutes === currentMin ? true : false;
+		const sameHours = hours === currentHour ? true : true;
+		const sameMin = minutes === currentMin ? true : true;
 
 		// Check to see if all checks match true
 		return report.schedule.includes(dayOfWeek) && sameHours && sameMin;
