@@ -126,7 +126,6 @@ router.post('/firebase', async ({ body }, res) => {
 });
 
 router.get('/slack/', authenticate, async (req, res, next) => {
-	console.log('128:', req.decodedJwt);
 	const { subject, roles, teamId } = req.decodedJwt;
 	const payload = qs.stringify({
 		client_id: process.env.SLACK_CLIENT_ID,
@@ -137,9 +136,14 @@ router.get('/slack/', authenticate, async (req, res, next) => {
 	const headers = {
 		'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
 	};
+	console.log(payload);
 	try {
 		// Make Auth request with Slack
 		const { data } = await axios.post('https://slack.com/api/oauth.access', payload, headers);
+		console.log('143', data);
+		if (data.user_id ===  null) {
+			return res.status(401).json({ message: 'Slack authentication error' });
+		}
 		// Query the users table for User resource
 		const resource = await Users.findById(subject);
 		console.log('Check here', resource);
