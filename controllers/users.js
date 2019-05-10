@@ -73,23 +73,22 @@ router.get('/joinCode/:joinCode', async (req, res) => {
 
 	try {
 		const teamId = await Users.findByJoinCode(joinCode);
-		console.log(teamId)
+		console.log(teamId);
 		const updated = await Users.updateTeamId(id, teamId);
-		
-	
-		const updatedToken = generateToken(updated)
-		console.log('updateToken', updatedToken)
+
+		const updatedToken = generateToken(updated);
+		console.log('updateToken', updatedToken);
 		res.status(202).json({
 			message: 'The user has successfully joined their team.',
 			updatedToken
 		});
 	} catch (error) {
-		console.log(error)
+		console.log(error);
 		res.status(500).json({
 			message:
 				'Sorry but something went wrong while retrieving the team id for this user.'
 		});
-		throw new Error(error)
+		throw new Error(error);
 	}
 });
 
