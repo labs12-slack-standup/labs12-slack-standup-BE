@@ -13,7 +13,7 @@ const apiUrl = 'https://slack.com/api';
 // DM works for the user installed the app, and only after other user manually add the app
 // We are still investing the issue
 
-const sendConfirmation = (userId, answers, questions, submission) => {
+const sendConfirmation = (userId, answers, questions, submission, state) => {
 	const fields = questions.map((question, index) => {
 		let object = {
 			title: question,
@@ -21,7 +21,7 @@ const sendConfirmation = (userId, answers, questions, submission) => {
 		};
 		return object;
 	});
-	console.log(fields);
+	//console.log(fields);
 	let attachments = [
 		{
 			title: 'Report was submitted successfully!',
@@ -44,11 +44,24 @@ const sendConfirmation = (userId, answers, questions, submission) => {
 		attachments: JSON.stringify(attachments)
 	};
 
+	let channelMessage = {
+		token: process.env.SLACK_ACCESS_TOKEN,
+		channel: state[1],
+		as_user: true,
+		attachments: JSON.stringify(attachments)
+	};
+
 	axios
-		.post(`${apiUrl}/chat.postMessage`, qs.stringify(message))
-		.then(result => {
-			console.log(result.data);
-		})
+		.all([
+			axios.post(`${apiUrl}/chat.postMessage`, qs.stringify(message)),
+			axios.post(`${apiUrl}/chat.postMessage`, qs.stringify(channelMessage))
+		])
+
+		.then(
+			axios.spread((firstRes, secondRes) => {
+				console.log(firstRes.data, secondRes.data);
+			})
+		)
 		.catch(err => {
 			console.log(err);
 		});

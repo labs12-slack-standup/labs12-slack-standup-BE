@@ -17,7 +17,6 @@ const apiUrl = 'https://slack.com/api';
 // This is the endpoint that returns the list of channels available for a user
 // this endpoint is requested when a user wants to create a new reports, on ComponentDidMount.
 router.get('/channels', authenticate, async (req, res, next) => {
-
 	try {
 		// We need to construct a url with the users slackToken appended as a query param
 		const token = req.decodedJwt.slackToken;
@@ -34,7 +33,6 @@ router.get('/channels', authenticate, async (req, res, next) => {
 	} catch (err) {
 		console.log(err);
 	}
-
 });
 
 router.post('/sendReport', slackVerification, async (req, res) => {
@@ -72,7 +70,7 @@ router.post('/sendReport', slackVerification, async (req, res) => {
 	} else if (type === 'dialog_submission') {
 		console.log(payload);
 		const { submission } = payload;
-
+		const resState = JSON.parse(payload.state);
 		//Submissions comes in as { question: answer ... send_by: full_name }. This strips out the questions
 		const questions = Object.keys(submission).filter(
 			item => item !== 'send_by'
@@ -87,12 +85,20 @@ router.post('/sendReport', slackVerification, async (req, res) => {
 			//immediately respond with an empty 200 response to let slack know command was received
 			res.send('');
 
+			//send confirmation of submission back to channel
+
 			//send confirmation of submission back to user
-			confirmation.sendConfirmation(user.id, answers, questions, submission);
+			confirmation.sendConfirmation(
+				user.id,
+				answers,
+				questions,
+				submission,
+				resState
+			);
 
 			//create an array of response objects
 			const responseArr = answers.map((answer, index) => ({
-				reportId: payload.state,
+				reportId: payload.state[0],
 				userId: id,
 				question: questions[index],
 				answer: answer,
@@ -113,7 +119,7 @@ router.post('/sendReport', slackVerification, async (req, res) => {
 
 // open the dialog by calling dialogs.open method and sending the payload
 const openDialog = async (payload, real_name, value, elements) => {
-	console.log(value.id);
+	console.log(value);
 	const dialogData = {
 		token: process.env.SLACK_ACCESS_TOKEN,
 		trigger_id: payload.trigger_id,
@@ -121,7 +127,7 @@ const openDialog = async (payload, real_name, value, elements) => {
 			title: value.reportName,
 			callback_id: 'report',
 			submit_label: 'report',
-			state: value.id.toString(),
+			state: JSON.stringify([value.id.toString(), value.slackChannelId]),
 			elements: [
 				...elements,
 				{
