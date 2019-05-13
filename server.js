@@ -9,10 +9,10 @@ const { slackReports } = require('./helpers/emailReports');
 // https://master-slack-standup.herokuapp.com/api/slack/sendReport
 
 // Url in Interactive Components for development
-//
+// https://62be0e91.ngrok.io/api/slack/sendReport
 
 //run every 30 minutes '0 */30 * * * *'
-cron.schedule('0 * * * * *', () => {
+cron.schedule('0 */5 * * * *', () => {
 	slackReports();
 });
 

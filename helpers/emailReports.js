@@ -42,7 +42,7 @@ const filterReports = async () => {
 		// Check to see if all checks match true
 		return (
 			report.schedule.includes(dayOfWeek) &&
-			!report.active &&
+			report.active &&
 			sameHours &&
 			sameMin
 		);
