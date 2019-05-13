@@ -17,7 +17,6 @@ const apiUrl = 'https://slack.com/api';
 // This is the endpoint that returns the list of channels available for a user
 // this endpoint is requested when a user wants to create a new reports, on ComponentDidMount.
 router.get('/channels', authenticate, async (req, res, next) => {
-
 	try {
 		// We need to construct a url with the users slackToken appended as a query param
 		const token = req.decodedJwt.slackToken;
@@ -34,7 +33,6 @@ router.get('/channels', authenticate, async (req, res, next) => {
 	} catch (err) {
 		console.log(err);
 	}
-
 });
 
 router.post('/sendReport', slackVerification, async (req, res) => {
@@ -46,7 +44,6 @@ router.post('/sendReport', slackVerification, async (req, res) => {
 
 	if (type === 'block_actions') {
 		const value = JSON.parse(payload.actions[0].value);
-
 		//pull questions out of the value and put them in an array
 		const questions = JSON.parse(value.questions);
 
@@ -70,8 +67,9 @@ router.post('/sendReport', slackVerification, async (req, res) => {
 				.json({ message: 'Something went wrong while getting the questions.' });
 		}
 	} else if (type === 'dialog_submission') {
-		console.log(payload);
 		const { submission } = payload;
+		const reportId = parseInt(/\w+/.exec(payload.state)[0]);
+		const channelId = /\w+$/.exec(payload.state)[0];
 
 		//Submissions comes in as { question: answer ... send_by: full_name }. This strips out the questions
 		const questions = Object.keys(submission).filter(
@@ -87,12 +85,18 @@ router.post('/sendReport', slackVerification, async (req, res) => {
 			//immediately respond with an empty 200 response to let slack know command was received
 			res.send('');
 
-			//send confirmation of submission back to user
-			confirmation.sendConfirmation(user.id, answers, questions, submission);
+			//send confirmation of submission back to user and channel
+			confirmation.sendConfirmation(
+				user.id,
+				answers,
+				questions,
+				submission,
+				channelId
+			);
 
 			//create an array of response objects
 			const responseArr = answers.map((answer, index) => ({
-				reportId: payload.state,
+				reportId,
 				userId: id,
 				question: questions[index],
 				answer: answer,
@@ -106,14 +110,14 @@ router.post('/sendReport', slackVerification, async (req, res) => {
 			res.status(200);
 		} catch (error) {
 			//likely need better error handling
-			console.log(error);
+			console.log('error', error);
 		}
 	}
 });
 
 // open the dialog by calling dialogs.open method and sending the payload
 const openDialog = async (payload, real_name, value, elements) => {
-	console.log(value.id);
+	//console.log(value);
 	const dialogData = {
 		token: process.env.SLACK_ACCESS_TOKEN,
 		trigger_id: payload.trigger_id,
@@ -121,7 +125,7 @@ const openDialog = async (payload, real_name, value, elements) => {
 			title: value.reportName,
 			callback_id: 'report',
 			submit_label: 'report',
-			state: value.id.toString(),
+			state: `${value.id} ${value.slackChannelId}`,
 			elements: [
 				...elements,
 				{

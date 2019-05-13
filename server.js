@@ -5,6 +5,12 @@ const cron = require('node-cron');
 
 const { slackReports } = require('./helpers/emailReports');
 
+// Url in Interactive Components for production
+// https://master-slack-standup.herokuapp.com/api/slack/sendReport
+
+// Url in Interactive Components for development
+// https://62be0e91.ngrok.io/api/slack/sendReport
+
 //run every 30 minutes '0 */30 * * * *'
 cron.schedule('0 */5 * * * *', () => {
 	slackReports();
@@ -19,10 +25,7 @@ const userController = require('./controllers/users');
 const reportController = require('./controllers/reports');
 const responseController = require('./controllers/responses');
 const slackController = require('./controllers/slack');
-const emailController = require('./controllers/email')
-
-
-
+const emailController = require('./controllers/email');
 
 // initializations
 const server = express();
@@ -39,13 +42,12 @@ server.use('/api/auth', authController);
 server.use('/api/users', authenticate, userController);
 server.use('/api/reports', authenticate, reportController);
 server.use('/api/responses', authenticate, responseController);
-server.use('/api/email', authenticate, emailController)
+server.use('/api/email', authenticate, emailController);
 // Changes authentication to handle requests from slack
 server.use('/api/slack', slackController);
 
 // error reporting middleware (Must be after all requests)
 errorMiddleware(server);
-
 
 server.get('/', (req, res) => {
 	res.status(200).json({ message: 'Sanity check' });

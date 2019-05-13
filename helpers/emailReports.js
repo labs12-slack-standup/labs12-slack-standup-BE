@@ -40,7 +40,12 @@ const filterReports = async () => {
 		const sameMin = minutes === currentMin ? true : true;
 
 		// Check to see if all checks match true
-		return report.schedule.includes(dayOfWeek) && sameHours && sameMin;
+		return (
+			report.schedule.includes(dayOfWeek) &&
+			report.active &&
+			sameHours &&
+			sameMin
+		);
 	});
 };
 
@@ -54,7 +59,9 @@ const slackReports = async () => {
 		const stitchedReports = await Promise.all(
 			reports.map(async report => {
 				let users = await Users.findByTeam(report.teamId);
-				const filteredUsers = users.filter(user => user.slackUserId);
+				const filteredUsers = users.filter(
+					user => user.slackUserId && user.active
+				);
 
 				const newReport = {
 					...report,

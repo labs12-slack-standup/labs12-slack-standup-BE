@@ -27,8 +27,7 @@ router.post('/register', async (req, res) => {
 		res.status(201).json(token);
 	} catch (error) {
 		res.status(500).json({
-			message:
-				'Sorry but something went wrong while registering',
+			message: 'Sorry but something went wrong while registering',
 			error
 		});
 
@@ -52,8 +51,7 @@ router.post('/login', async (req, res) => {
 		});
 	} catch (error) {
 		res.status(500).json({
-			message:
-				'Sorry but something went wrong while logging in'
+			message: 'Sorry but something went wrong while logging in'
 		});
 
 		throw new Error(error);
@@ -71,8 +69,7 @@ const config = {
 	client_id: process.env.CLIENT_ID,
 	auth_uri: 'https://accounts.google.com/o/oauth2/auth',
 	token_uri: 'https://oauth2.googleapis.com/token',
-	auth_provider_x509_cert_url:
-		'https://www.googleapis.com/oauth2/v1/certs',
+	auth_provider_x509_cert_url: 'https://www.googleapis.com/oauth2/v1/certs',
 	client_x509_cert_url: process.env.CLIENT_URL
 };
 
@@ -132,45 +129,49 @@ router.get('/slack/', authenticate, async (req, res, next) => {
 		client_secret: process.env.SLACK_CLIENT_SECRET,
 		code: req.query.code,
 		redirect_uri: process.env.SLACK_REDIRECT_URI
-	})
+	});
 	const headers = {
 		'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
 	};
 	console.log(payload);
 	try {
 		// Make Auth request with Slack
-		const { data } = await axios.post('https://slack.com/api/oauth.access', payload, headers);
-		console.log('143', data);
-		if (data.user_id ===  null) {
+		const { data } = await axios.post(
+			'https://slack.com/api/oauth.access',
+			payload,
+			headers
+		);
+		console.log('data', data);
+		if (data.ok === false || data.user_id === null) {
+			console.log('got here');
 			return res.status(401).json({ message: 'Slack authentication error' });
 		}
 		// Query the users table for User resource
 		const resource = await Users.findById(subject);
-		console.log('Check here', resource);
+		//console.log('Check here', resource);
 		// If resource slackToken === null, then build slackObj to update the user resource
 		const slackObj = {
 			slackToken: data.access_token,
 			slackUserId: data.user_id,
 			slackTeamId: data.team_id
-		}
-		console.log(slackObj);
+		};
+		console.log('slackObj', slackObj);
 		if (resource.slackToken === null) {
 			await Users.update(subject, slackObj);
-			const user = { subject, roles, teamId, ...slackObj }
-			console.log('154', user);
+			const user = { subject, roles, teamId, ...slackObj };
+			console.log('user', user);
 			const token = generateTokenSlack(user);
 			return res.status(202).json({ token });
 		} else {
 			// If resource slackToken !== null, then create token Obj
-			const user = { subject, roles, teamId, ...slackObj }
-			console.log('161', user);
+			const user = { subject, roles, teamId, ...slackObj };
+			console.log('user token null', user);
 			const token = generateTokenSlack(user);
 			return res.status(202).json({ token });
 		}
 	} catch (err) {
 		console.log(err);
 	}
-})
+});
 
 module.exports = router;
- 

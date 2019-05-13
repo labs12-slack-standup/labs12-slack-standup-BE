@@ -30,7 +30,7 @@ const button = async reports => {
 									type: 'section',
 									text: {
 										type: 'plain_text',
-										text: 'Fill out your Daily Standup report!'
+										text: `Please fill out your report: ${report.reportName}`
 									},
 									accessory: {
 										type: 'button',
@@ -49,7 +49,7 @@ const button = async reports => {
 				const responseMessage = await axios.post(postUrl, response, {
 					headers
 				});
-				console.log(responseMessage);
+				//console.log(responseMessage);
 			});
 		});
 	} catch (err) {
