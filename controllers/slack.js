@@ -44,7 +44,6 @@ router.post('/sendReport', slackVerification, async (req, res) => {
 
 	if (type === 'block_actions') {
 		const value = JSON.parse(payload.actions[0].value);
-
 		//pull questions out of the value and put them in an array
 		const questions = JSON.parse(value.questions);
 
@@ -68,9 +67,11 @@ router.post('/sendReport', slackVerification, async (req, res) => {
 				.json({ message: 'Something went wrong while getting the questions.' });
 		}
 	} else if (type === 'dialog_submission') {
-		console.log(payload);
+		//console.log(payload);
 		const { submission } = payload;
+		console.log('payload', payload);
 		const resState = JSON.parse(payload.state);
+		console.log('resState', resState);
 		//Submissions comes in as { question: answer ... send_by: full_name }. This strips out the questions
 		const questions = Object.keys(submission).filter(
 			item => item !== 'send_by'
@@ -112,14 +113,14 @@ router.post('/sendReport', slackVerification, async (req, res) => {
 			res.status(200);
 		} catch (error) {
 			//likely need better error handling
-			console.log(error);
+			console.log('error', error);
 		}
 	}
 });
 
 // open the dialog by calling dialogs.open method and sending the payload
 const openDialog = async (payload, real_name, value, elements) => {
-	console.log(value);
+	//console.log(value);
 	const dialogData = {
 		token: process.env.SLACK_ACCESS_TOKEN,
 		trigger_id: payload.trigger_id,
@@ -127,7 +128,7 @@ const openDialog = async (payload, real_name, value, elements) => {
 			title: value.reportName,
 			callback_id: 'report',
 			submit_label: 'report',
-			state: JSON.stringify([value.id.toString(), value.slackChannelId]),
+			state: [value.id.toString(), value.slackChannelId],
 			elements: [
 				...elements,
 				{
