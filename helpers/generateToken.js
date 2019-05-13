@@ -4,7 +4,8 @@ function generateToken(user) {
 	const payload = {
 		subject: user.id,
 		roles: user.roles,
-		teamId: user.teamId
+		teamId: user.teamId,
+		joinCode: user.joinCode
 	};
 
 	const options = {
