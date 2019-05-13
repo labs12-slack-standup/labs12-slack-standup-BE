@@ -67,13 +67,10 @@ router.post('/sendReport', slackVerification, async (req, res) => {
 				.json({ message: 'Something went wrong while getting the questions.' });
 		}
 	} else if (type === 'dialog_submission') {
-		//console.log('payload', payload);
-		console.log('state', payload.state);
 		const { submission } = payload;
 		const reportId = parseInt(/\w+/.exec(payload.state)[0]);
-		console.log('reportid', reportId);
 		const channelId = /\w+$/.exec(payload.state)[0];
-		console.log('channelId', channelId);
+
 		//Submissions comes in as { question: answer ... send_by: full_name }. This strips out the questions
 		const questions = Object.keys(submission).filter(
 			item => item !== 'send_by'
@@ -88,9 +85,7 @@ router.post('/sendReport', slackVerification, async (req, res) => {
 			//immediately respond with an empty 200 response to let slack know command was received
 			res.send('');
 
-			//send confirmation of submission back to channel
-
-			//send confirmation of submission back to user
+			//send confirmation of submission back to user and channel
 			confirmation.sendConfirmation(
 				user.id,
 				answers,
