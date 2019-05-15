@@ -2,8 +2,7 @@ const router = require('express').Router();
 const Responses = require('../models/Responses');
 const Reports = require('../models/Reports');
 const moment = require('moment');
-const dateFns = require('date-fns');
-const { subDays } = require('date-fns');
+const { endOfDay, subDays, startOfDay } = require('date-fns');
 const searchReports = require('../helpers/searchReports');
 
 router.get('/', async (req, res) => {
@@ -54,8 +53,6 @@ router.get('/:reportId', async (req, res) => {
 		// Loop through the last 7 days and search reports for each day
 		for (let i = 0; i < 7; i ++) {
 			const day = subDays(date, i)
-			// const reports = await searchReports(reportId, day);
-			// console.log(reports);
 			const batch = {
 				date: day,
 				responses: await searchReports(reportId, day)
@@ -77,16 +74,32 @@ router.post('/:reportId', async (req, res) => {
 		// Query the db to verify that this team member is verified to insert a
 		// resouce for this report.
 		const resource = await Reports.findByIdAndTeamId(reportId, teamId);
-		//console.log(resource);
+
+		// Query db to verify that team member has not already submitted a response today.
+		const start = startOfDay(new Date());
+		const end = endOfDay(new Date());
+		const todaysResponses = await Responses.findTodays(subject, reportId, start, end);
+
+		// If user has already submitted a report throw an error.
+		if (todaysResponses.length > 0) {
+			throw new Error("You've already submitted your report for today.");
+		}
+
 		// Parse the stringified questions and map to array
 		const resourceQuestions = JSON.parse(resource.questions);
-		//console.log(resourceQuestions);
 
 		// Compare the questions from the resource variable with the questions from
 		// the request body, if the questions don't match, the client has attempted
-		// to alter them, throw an error
+		// to alter them, throw an error, also check that each response has been 
+		// filled in.
 		for (let i = 0; i < req.body.length; i++) {
 			const q = req.body[i].question;
+
+			const str = req.body[i].response.trim();
+
+			if (str.length < 1) {
+				throw new Error('This report requires all responses to be filled in.')
+			} 
 
 			if (!resourceQuestions.includes(q)) {
 				throw new Error('Incoming questions failed verification check');
@@ -108,7 +121,7 @@ router.post('/:reportId', async (req, res) => {
 		});
 	} catch (error) {
 		res.status(500).json({
-			message: 'Sorry but something went wrong while posting your responses.'
+			message: error.message
 		});
 		throw new Error(error);
 	}
