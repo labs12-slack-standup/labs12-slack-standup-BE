@@ -30,7 +30,7 @@ router.get('/channels', authenticate, async (req, res, next) => {
 			}));
 			res.status(200).json(channels);
 		}
-	} catch (err) {
+	} catch (error) {
 		res.status(500).json({
 			message: error.message
 		});
