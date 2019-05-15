@@ -29,9 +29,14 @@ router.get('/channels', authenticate, async (req, res, next) => {
 				name: channel.name
 			}));
 			res.status(200).json(channels);
+		} else {
+			res.status(400).json({ message: "Slack Authentication failed" });
 		}
-	} catch (err) {
-		console.log(err);
+	} catch (error) {
+		res.status(500).json({
+			message: error.message
+		});
+		throw new Error(error);
 	}
 });
 
@@ -110,7 +115,10 @@ router.post('/sendReport', slackVerification, async (req, res) => {
 			res.status(200);
 		} catch (error) {
 			//likely need better error handling
-			console.log('error', error);
+			res.status(500).json({
+				message: error.message
+			});
+			throw new Error(error);
 		}
 	}
 });

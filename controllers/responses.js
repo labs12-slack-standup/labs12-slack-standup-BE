@@ -76,8 +76,9 @@ router.post('/:reportId', async (req, res) => {
 		const resource = await Reports.findByIdAndTeamId(reportId, teamId);
 
 		// Query db to verify that team member has not already submitted a response today.
-		const start = startOfDay(new Date());
-		const end = endOfDay(new Date());
+		const today = new Date();
+		const start = startOfDay(today);
+		const end = endOfDay(today);
 		const todaysResponses = await Responses.findTodays(subject, reportId, start, end);
 
 		// If user has already submitted a report throw an error.
@@ -116,9 +117,12 @@ router.post('/:reportId', async (req, res) => {
 
 		await Responses.add(responseArr);
 
-		res.status(201).json({
-			message: 'Thank you for posting your responses.'
-		});
+		const batch = {
+			date: today,
+			responses: await searchReports(reportId, today)
+		}
+
+		res.status(201).json([batch]);
 	} catch (error) {
 		res.status(500).json({
 			message: error.message
