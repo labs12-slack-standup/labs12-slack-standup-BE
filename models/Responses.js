@@ -29,9 +29,10 @@ function findBy(filter) {
 }
 
 // Get submitted report by user and by dae
-function findTodays(user, startday, endDay) {
+function findTodays(user, reportId, startday, endDay) {
 	return db('responses')
 		.where('userId', user)
+		.where('reportId', reportId)
 		.where('submitted_date', '>=', startday)
 		.where('submitted_date', '<=', endDay)
 }

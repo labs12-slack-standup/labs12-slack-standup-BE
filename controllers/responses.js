@@ -80,7 +80,7 @@ router.post('/:reportId', async (req, res) => {
 		// Query db to verify that team member has not already submitted a response today.
 		const start = startOfDay(new Date());
 		const end = endOfDay(new Date());
-		const todaysResponses = await Responses.findTodays(subject, start, end);
+		const todaysResponses = await Responses.findTodays(subject, reportId, start, end);
 
 		// If user has already submitted a report throw an error.
 		if (todaysResponses.length > 0) {
@@ -93,9 +93,16 @@ router.post('/:reportId', async (req, res) => {
 
 		// Compare the questions from the resource variable with the questions from
 		// the request body, if the questions don't match, the client has attempted
-		// to alter them, throw an error
+		// to alter them, throw an error, also check that each response has been 
+		// filled in.
 		for (let i = 0; i < req.body.length; i++) {
 			const q = req.body[i].question;
+
+			const str = req.body[i].response.trim();
+
+			if (str.length < 1) {
+				throw new Error('This report requires all responses to be filled in.')
+			} 
 
 			if (!resourceQuestions.includes(q)) {
 				throw new Error('Incoming questions failed verification check');
