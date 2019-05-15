@@ -13,6 +13,7 @@ const { slackReports } = require('./helpers/emailReports');
 
 //run every 30 minutes '0 */30 * * * *'
 cron.schedule('0 */5 * * * *', () => {
+	console.log('cron job running');
 	slackReports();
 });
 
