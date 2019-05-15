@@ -53,8 +53,6 @@ router.get('/:reportId', async (req, res) => {
 		// Loop through the last 7 days and search reports for each day
 		for (let i = 0; i < 7; i ++) {
 			const day = subDays(date, i)
-			// const reports = await searchReports(reportId, day);
-			// console.log(reports);
 			const batch = {
 				date: day,
 				responses: await searchReports(reportId, day)
@@ -89,7 +87,6 @@ router.post('/:reportId', async (req, res) => {
 
 		// Parse the stringified questions and map to array
 		const resourceQuestions = JSON.parse(resource.questions);
-		//console.log(resourceQuestions);
 
 		// Compare the questions from the resource variable with the questions from
 		// the request body, if the questions don't match, the client has attempted

@@ -51,8 +51,6 @@ module.exports = async function searchReports(reportId, date) {
       }
     }
 
-    console.log(membersArray);
-
     return membersArray;
   } catch (err) {
     console.log(err);

@@ -35,7 +35,6 @@ router.get('/:reportId', async (req, res) => {
 		const report = await Reports.findByIdAndTeamId(reportId, teamId);
 		if (report) {
 			const message = 'The reports were found in the database.';
-			console.log(report);
 			res.status(200).json({
 				message,
 				report: {
@@ -73,13 +72,11 @@ router.post('/', adminValidation, async (req, res) => {
 	// use is for updating reports extracted from the cron job.
 	const nextPublishDate = formatDateNextPublishedDate(date, schedule);
 
-
 	const newReport = { ...req.body, teamId, nextPublishDate };
-	console.log(newReport);
+
 	try {
 		const report = await Reports.add(newReport);
 		const reports = await Reports.findByTeam(teamId);
-		console.log('report:', report);
 		res.status(201).json(reports);
 	} catch (error) {
 		console.log(error);
@@ -121,7 +118,6 @@ router.put('/:reportId', adminValidation, async (req, res) => {
 	try {
 		const { reportId } = req.params;
 		const editedReport = await Reports.update(reportId, teamId, req.body);
-		console.log('report:', editedReport);
 		if (editedReport) {
 			const reports = await Reports.findByTeam(teamId);
 			res.status(201).json(reports);
