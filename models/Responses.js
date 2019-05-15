@@ -5,7 +5,8 @@ module.exports = {
 	find,
 	findBy,
 	findById,
-	findByAndJoin
+	findByAndJoin,
+	findTodays
 };
 
 // Create response
@@ -25,6 +26,14 @@ function find() {
 // Get responses by filter
 function findBy(filter) {
 	return db('responses').where(filter);
+}
+
+// Get submitted report by user and by dae
+function findTodays(user, startday, endDay) {
+	return db('responses')
+		.where('userId', user)
+		.where('submitted_date', '>=', startday)
+		.where('submitted_date', '<=', endDay)
 }
 
 // Get responses by id
