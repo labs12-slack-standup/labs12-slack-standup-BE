@@ -31,7 +31,10 @@ router.get('/channels', authenticate, async (req, res, next) => {
 			res.status(200).json(channels);
 		}
 	} catch (err) {
-		console.log(err);
+		res.status(500).json({
+			message: error.message
+		});
+		throw new Error(error);
 	}
 });
 
@@ -110,7 +113,10 @@ router.post('/sendReport', slackVerification, async (req, res) => {
 			res.status(200);
 		} catch (error) {
 			//likely need better error handling
-			console.log('error', error);
+			res.status(500).json({
+				message: error.message
+			});
+			throw new Error(error);
 		}
 	}
 });
