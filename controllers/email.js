@@ -16,8 +16,8 @@ router.post('/', async (req, res) => {
 			subject: 'Welcome to Stand-Em-Up',
 			text: `Join our Stand-Em-Up team. Go to https://stand-em-ups.netlify.com/onboarding, create a login, and enter your join code (${joinCode}) when prompted.`
 		};
-		await sgMail.send(msg);
-		res.status(200).json({ message: 'Emails sent successfully' });
+		const success = await sgMail.send(msg);
+		res.status(200).end();
 	} catch (error) {
 		res.status(500).json({
 			message: 'Sorry but something went wrong while sending the emails.'

@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"main": "server.js",
 	"scripts": {
-		"start": "node server.js",
+		"start": "pm2-runtime start ecosystem.config.js --env production",
 		"server": "nodemon server.js"
 	},
 	"repository": "https://github.com/labs12-slack-standup/labs12-slack-standup-BE.git",
@@ -31,6 +31,7 @@
 		"morgan": "^1.9.1",
 		"node-cron": "^2.0.3",
 		"pg": "^7.10.0",
+		"pm2": "^3.5.0",
 		"qs": "^6.7.0",
 		"sqlite3": "^4.0.6",
 		"tsscmp": "^1.0.6",
