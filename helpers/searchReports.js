@@ -17,6 +17,7 @@ module.exports = async function searchReports(reportId, date) {
       membersArray.push({
         userId: responses[0].userId,
         fullName: responses[0].fullName,
+        profilePic: responses[0].profilePic,
         questions: [
           {
             id: responses[0].id,
@@ -42,6 +43,7 @@ module.exports = async function searchReports(reportId, date) {
           membersArray.push({
             userId: responses[i].userId,
             fullName: responses[i].fullName,
+            profilePic: responses[i].profilePic,
             questions: [
               {
                 id: responses[i].id,               
