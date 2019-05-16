@@ -19,6 +19,7 @@ module.exports = async function searchReports(reportId, date) {
         fullName: responses[0].fullName,
         questions: [
           {
+            id: responses[0].id,
             question: responses[0].question,
             answer: responses[0].answer
           }
@@ -32,6 +33,7 @@ module.exports = async function searchReports(reportId, date) {
         // membersArray push the questions to the questions property
         if (membersArray[n].fullName === responses[i].fullName) {
           membersArray[n].questions.push({
+            id: responses[i].id,
             question: responses[i].question,
             answer: responses[i].answer
           });
@@ -42,6 +44,7 @@ module.exports = async function searchReports(reportId, date) {
             fullName: responses[i].fullName,
             questions: [
               {
+                id: responses[i].id,               
                 question: responses[i].question,
                 answer: responses[i].answer
               }
@@ -50,9 +53,6 @@ module.exports = async function searchReports(reportId, date) {
         }
       }
     }
-
-    console.log(membersArray);
-
     return membersArray;
   } catch (err) {
     console.log(err);

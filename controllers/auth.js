@@ -123,6 +123,7 @@ router.post('/firebase', async ({ body }, res) => {
 });
 
 router.get('/slack/', authenticate, async (req, res, next) => {
+	//console.log('got here?');
 	const { subject, roles, teamId } = req.decodedJwt;
 	const payload = qs.stringify({
 		client_id: process.env.SLACK_CLIENT_ID,
@@ -133,7 +134,7 @@ router.get('/slack/', authenticate, async (req, res, next) => {
 	const headers = {
 		'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
 	};
-	console.log(payload);
+	//console.log('payload', payload);
 	try {
 		// Make Auth request with Slack
 		const { data } = await axios.post(
