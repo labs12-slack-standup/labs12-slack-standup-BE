@@ -8,7 +8,7 @@ sgMail.setApiKey(
 
 router.post('/', async (req, res) => {
 	try {
-        console.log(req.body)
+		// console.log(req.body)
 		const { email, joinCode } = req.body;
 		const msg = {
 			to: email,
