@@ -172,6 +172,8 @@ router.get('/slack/', authenticate, async (req, res, next) => {
 		}
 	} catch (err) {
 		console.log(err);
+		res.status(500).json({ message: 'Error authenticating user' });
+		throw new Error(err);
 	}
 });
 

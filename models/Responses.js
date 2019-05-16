@@ -51,6 +51,6 @@ function findByAndJoin(reportId, startday, endDay) {
 		.where('submitted_date', '>=', startday)
 		.where('submitted_date', '<=', endDay)
 		.join('users', 'responses.userId', 'users.id')
-		.select('users.id as userId', 'users.fullName', 'responses.id', 'responses.question', 'responses.answer', 'responses.submitted_date')
+		.select('users.id as userId', 'users.fullName', 'users.profilePic', 'responses.id', 'responses.question', 'responses.answer', 'responses.submitted_date')
 		.orderBy('responses.submitted_date', 'desc')
 }
