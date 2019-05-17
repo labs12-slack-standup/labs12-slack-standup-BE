@@ -38,6 +38,7 @@ router.post('/:reportId/day', async (req, res) => {
 	}
 });
 
+//get a user's responses if they've completed a report today
 router.get('/', async (req, res) => {
 	const { userId } = req.decodedJwt;
 	const { reportId } = req.body;
