@@ -5,7 +5,8 @@ function generateToken(user) {
 		subject: user.id,
 		roles: user.roles,
 		teamId: user.teamId,
-		joinCode: user.joinCode
+		joinCode: user.joinCode,
+		slackTeamId: user.slackTeamId
 	};
 
 	const options = {

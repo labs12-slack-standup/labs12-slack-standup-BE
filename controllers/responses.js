@@ -30,11 +30,35 @@ router.post('/:reportId/day', async (req, res) => {
 		const batch = {
 			date: day,
 			responses: await searchReports(reportId, day)
-		}
-		res.status(200).json([batch])
+		};
+		res.status(200).json([batch]);
 	} catch (err) {
 		console.log(err);
 		throw new Error(err);
+	}
+});
+
+//get a user's responses if they've completed a report today
+router.get('/', async (req, res) => {
+	const { userId } = req.decodedJwt;
+	const { reportId } = req.body;
+	//use the findToday's db helper, so create startDay and endDay variables in endpoint
+	const today = new Date();
+	const start = startOfDay(today);
+	const end = endOfDay(today);
+
+	try {
+		const responses = await Responses.findTodays(userId, reportId, start, end);
+		if (responses.length > 1) {
+			return res.status(200).json(responses);
+		} else {
+			return res
+				.status(404)
+				.json({ message: 'The user has not yet filled out any reports' });
+		}
+	} catch (error) {
+		console.log(error);
+		throw new Error(error);
 	}
 });
 
@@ -51,12 +75,12 @@ router.get('/:reportId', async (req, res) => {
 		let payload = [];
 
 		// Loop through the last 7 days and search reports for each day
-		for (let i = 0; i < 7; i ++) {
-			const day = subDays(date, i)
+		for (let i = 0; i < 7; i++) {
+			const day = subDays(date, i);
 			const batch = {
 				date: day,
 				responses: await searchReports(reportId, day)
-			}
+			};
 			payload.push(batch);
 		}
 		res.status(200).json(payload);
@@ -79,7 +103,12 @@ router.post('/:reportId', async (req, res) => {
 		const today = new Date();
 		const start = startOfDay(today);
 		const end = endOfDay(today);
-		const todaysResponses = await Responses.findTodays(subject, reportId, start, end);
+		const todaysResponses = await Responses.findTodays(
+			subject,
+			reportId,
+			start,
+			end
+		);
 
 		// If user has already submitted a report throw an error.
 		if (todaysResponses.length > 0) {
@@ -91,7 +120,7 @@ router.post('/:reportId', async (req, res) => {
 
 		// Compare the questions from the resource variable with the questions from
 		// the request body, if the questions don't match, the client has attempted
-		// to alter them, throw an error, also check that each response has been 
+		// to alter them, throw an error, also check that each response has been
 		// filled in.
 		for (let i = 0; i < req.body.length; i++) {
 			const q = req.body[i].question;
@@ -99,8 +128,8 @@ router.post('/:reportId', async (req, res) => {
 			const str = req.body[i].response.trim();
 
 			if (str.length < 1) {
-				throw new Error('This report requires all responses to be filled in.')
-			} 
+				throw new Error('This report requires all responses to be filled in.');
+			}
 
 			if (!resourceQuestions.includes(q)) {
 				throw new Error('Incoming questions failed verification check');
@@ -120,10 +149,11 @@ router.post('/:reportId', async (req, res) => {
 		const batch = {
 			date: today,
 			responses: await searchReports(reportId, today)
-		}
+		};
 
 		res.status(201).json([batch]);
 	} catch (error) {
+		console.log(error);
 		res.status(500).json({
 			message: error.message
 		});

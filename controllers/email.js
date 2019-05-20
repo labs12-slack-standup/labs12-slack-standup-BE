@@ -8,13 +8,13 @@ sgMail.setApiKey(
 
 router.post('/', async (req, res) => {
 	try {
-        console.log(req.body)
+		// console.log(req.body)
 		const { email, joinCode } = req.body;
 		const msg = {
 			to: email,
 			from: 'stand-em-up@lambdaschool.gov',
 			subject: 'Welcome to Stand-Em-Up',
-			text: `Join our Stand-Em-Up team. Go to https://stand-em-ups.netlify.com/onboarding, create a login, and enter your join code (${joinCode}) when prompted.`
+			text: `Join our Stand-Em-Up team. Go to https://stand-em-ups.netlify.com/login, create a login, and enter your join code (${joinCode}) when prompted.`
 		};
 		const success = await sgMail.send(msg);
 		res.status(200).end();
