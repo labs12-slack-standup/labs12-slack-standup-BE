@@ -3,6 +3,7 @@ const Responses = require('../models/Responses');
 const Reports = require('../models/Reports');
 const moment = require('moment');
 const { endOfDay, subDays, startOfDay } = require('date-fns');
+
 const { searchReports, searchReportsByUser } = require('../helpers/searchReports');
 
 // router.get('/', async (req, res) => {
@@ -39,6 +40,7 @@ const { searchReports, searchReportsByUser } = require('../helpers/searchReports
 // });
 
 // get a user's responses if they've completed a report today
+
 router.get('/', async (req, res) => {
 	const { userId } = req.decodedJwt;
 	const { reportId } = req.body;
