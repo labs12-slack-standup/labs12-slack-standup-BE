@@ -3,42 +3,42 @@ const Responses = require('../models/Responses');
 const Reports = require('../models/Reports');
 const moment = require('moment');
 const { endOfDay, subDays, startOfDay } = require('date-fns');
-const searchReports = require('../helpers/searchReports');
+const { searchReports, searchReportsByUser } = require('../helpers/searchReports');
 
-router.get('/', async (req, res) => {
-	try {
-		const responses = await Responses.find();
-		const message = 'The responses were found in the database.';
-		res.status(200).json({ message, responses });
-	} catch (error) {
-		res.status(500).json({
-			message:
-				'Sorry but something went wrong while retrieving the list of responses.'
-		});
+// router.get('/', async (req, res) => {
+// 	try {
+// 		const responses = await Responses.find();
+// 		const message = 'The responses were found in the database.';
+// 		res.status(200).json({ message, responses });
+// 	} catch (error) {
+// 		res.status(500).json({
+// 			message:
+// 				'Sorry but something went wrong while retrieving the list of responses.'
+// 		});
 
-		throw new Error(error);
-	}
-});
+// 		throw new Error(error);
+// 	}
+// });
 
 // Gets all responses by report for current date
-router.post('/:reportId/day', async (req, res) => {
-	const { reportId } = req.params;
-	const { teamId } = req.decodedJwt;
-	const day = new Date(req.body.date);
-	try {
-		await Reports.findById(reportId, teamId);
-		const batch = {
-			date: day,
-			responses: await searchReports(reportId, day)
-		};
-		res.status(200).json([batch]);
-	} catch (err) {
-		console.log(err);
-		throw new Error(err);
-	}
-});
+// router.post('/:reportId/day', async (req, res) => {
+// 	const { reportId } = req.params;
+// 	const { teamId } = req.decodedJwt;
+// 	const day = new Date(req.body.date);
+// 	try {
+// 		await Reports.findById(reportId, teamId);
+// 		const batch = {
+// 			date: day,
+// 			responses: await searchReports(reportId, day)
+// 		};
+// 		res.status(200).json([batch]);
+// 	} catch (err) {
+// 		console.log(err);
+// 		throw new Error(err);
+// 	}
+// });
 
-//get a user's responses if they've completed a report today
+// get a user's responses if they've completed a report today
 router.get('/', async (req, res) => {
 	const { userId } = req.decodedJwt;
 	const { reportId } = req.body;
@@ -59,34 +59,6 @@ router.get('/', async (req, res) => {
 	} catch (error) {
 		console.log(error);
 		throw new Error(error);
-	}
-});
-
-// Gets all responses by report for the last 7 days
-router.get('/:reportId', async (req, res) => {
-	const { reportId } = req.params;
-	const { teamId } = req.decodedJwt;
-	try {
-		// Run a check in the Reports model to verify that the reportId and TeamId are a match
-		// If teamId and reportId don't match with resource error will be thrown
-		await Reports.findById(reportId, teamId);
-		const date = new Date();
-
-		let payload = [];
-
-		// Loop through the last 7 days and search reports for each day
-		for (let i = 0; i < 7; i++) {
-			const day = subDays(date, i);
-			const batch = {
-				date: day,
-				responses: await searchReports(reportId, day)
-			};
-			payload.push(batch);
-		}
-		res.status(200).json(payload);
-	} catch (err) {
-		console.log(err);
-		throw new Error(err);
 	}
 });
 
@@ -160,5 +132,104 @@ router.post('/:reportId', async (req, res) => {
 		throw new Error(error);
 	}
 });
+
+// Gets all responses by report for the last 7 days
+router.get('/:reportId', async (req, res) => {
+	const { reportId } = req.params;
+	const { teamId } = req.decodedJwt;
+	try {
+		// Run a check in the Reports model to verify that the reportId and TeamId are a match
+		// If teamId and reportId don't match with resource error will be thrown
+		await Reports.findById(reportId, teamId);
+		const responses = await filterSevenDays(reportId)
+		res.status(200).json(responses);
+	} catch (err) {
+		console.log(err);
+		throw new Error(err);
+	}
+});
+
+router.post('/:reportId/filter', async (req, res) => {
+	const { reportId } = req.params;
+	const { teamId } = req.decodedJwt;
+	const { user, date } = req.body;
+	try {
+		// Check user has permission to view this resource
+		const report = await Reports.findByIdAndTeamId(reportId, teamId);
+		if (report.length < 1) {
+			throw new Error("Your not permitted to view this report");
+		}
+		
+		let responses
+		if (user && date) {
+			responses = await filterByUserAndDate(reportId, user, date);
+		} else if (date) {
+			responses = await filterByDate(reportId, date);
+		} else if (user) {
+			responses = await filterUserLastSevenDays(reportId, user);
+		} else {
+			responses = await filterSevenDays(reportId)
+		}
+		res.status(200).json({ clickedDate: date, clickedResponder: user , responses });
+	} catch (err) {
+		console.log(err);
+	}
+})
+
+// ------- POST /:reportId/filter helpers -------
+
+async function filterByUserAndDate(reportId, userId, date) {
+	const batch = {
+		date,
+		responses: await searchReportsByUser(reportId, userId, date)
+	};
+
+	return [batch]
+}
+
+async function filterByDate(reportId, date) {
+	const batch = {
+		date,
+		responses: await searchReports(reportId, date)
+	};
+
+	return [batch]
+}
+
+async function filterUserLastSevenDays(reportId, userId) {
+	const date = new Date();
+
+	let payload = [];
+
+	// Loop through the last 7 days and search reports for each day
+	for (let i = 0; i < 7; i++) {
+		const day = subDays(date, i);
+		const batch = {
+			date: day,
+			responses: await searchReportsByUser(reportId, userId, day)
+		};
+		payload.push(batch);
+	}
+	return payload;
+}
+
+async function filterSevenDays(reportId) {
+	const date = new Date();
+
+	let payload = [];
+
+	// Loop through the last 7 days and search reports for each day
+	for (let i = 0; i < 7; i++) {
+		const day = subDays(date, i);
+		const batch = {
+			date: day,
+			responses: await searchReports(reportId, day)
+		};
+		payload.push(batch);
+	}
+	return payload;
+}
+
+
 
 module.exports = router;
