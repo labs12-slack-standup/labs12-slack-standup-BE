@@ -20,9 +20,9 @@ exports.up = function(knex) {
 			.onDelete('CASCADE')
 			.onUpdate('CASCADE');
 
-		tbl.string('question', 128).notNullable();
+		tbl.text('question').notNullable();
 
-		tbl.string('answer', 128);
+		tbl.text('answer');
 
 		tbl.datetime('submitted_date', { precision: 2 }).notNullable();
 	});
