@@ -6,7 +6,8 @@ module.exports = {
 	findBy,
 	findById,
 	findByAndJoin,
-	findTodays
+	findTodays,
+	findByUserAndJoin
 };
 
 // Create response
@@ -28,7 +29,7 @@ function findBy(filter) {
 	return db('responses').where(filter);
 }
 
-// Get submitted report by user and by dae
+// Get submitted report by user and by date
 function findTodays(user, reportId, startday, endDay) {
 	return db('responses')
 		.where('userId', user)
@@ -48,6 +49,18 @@ function findById(id) {
 function findByAndJoin(reportId, startday, endDay) {
 	return db('responses')
 		.where('reportId', reportId)
+		.where('submitted_date', '>=', startday)
+		.where('submitted_date', '<=', endDay)
+		.join('users', 'responses.userId', 'users.id')
+		.select('users.id as userId', 'users.fullName', 'users.profilePic', 'responses.id', 'responses.question', 'responses.answer', 'responses.submitted_date')
+		.orderBy('responses.submitted_date', 'desc')
+}
+
+// This allows us to search by reportId join with users table and return user's name
+function findByUserAndJoin(reportId, userId, startday, endDay) {
+	return db('responses')
+		.where('reportId', reportId)
+		.where('userId', userId)
 		.where('submitted_date', '>=', startday)
 		.where('submitted_date', '<=', endDay)
 		.join('users', 'responses.userId', 'users.id')
