@@ -141,20 +141,8 @@ router.get('/:reportId', async (req, res) => {
 		// Run a check in the Reports model to verify that the reportId and TeamId are a match
 		// If teamId and reportId don't match with resource error will be thrown
 		await Reports.findById(reportId, teamId);
-		const date = new Date();
-
-		let payload = [];
-
-		// Loop through the last 7 days and search reports for each day
-		for (let i = 0; i < 7; i++) {
-			const day = subDays(date, i);
-			const batch = {
-				date: day,
-				responses: await searchReports(reportId, day)
-			};
-			payload.push(batch);
-		}
-		res.status(200).json(payload);
+		const responses = await filterSevenDays(reportId)
+		res.status(200).json(responses);
 	} catch (err) {
 		console.log(err);
 		throw new Error(err);
