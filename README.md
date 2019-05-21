@@ -7,7 +7,6 @@ Back-end Labs Project
 [@AAsriyan](https://github.com/AAsriyan)
 [@erin-koen](https://github.com/erin-koen)
 [@mikaelacurrier](https://github.com/mikaelacurrier)
-[@Mindysueasaurus](https://github.com/Mindysueasaurus)
 [@shaunmcarmody](https://github.com/shaunmcarmody)
 
 # **Deployed Backend**
@@ -31,7 +30,7 @@ Back-end Labs Project
 - [Helmet](https://www.npmjs.com/package/helmet): `Helmet helps you secure your Express apps by setting various HTTP headers`
 - [Dotenv](https://www.npmjs.com/package/dotenv): `Dotenv is a zero-dependency module that loads environment variables from a .env file`
 
-#### Developer
+#### Development
 
 - [Nodemon](https://www.npmjs.com/package/nodemon): `nodemon is a tool that helps develop Node.js based applications by automatically restarting the node application when file changes in the directory are detected`
 
@@ -55,6 +54,10 @@ yarn server
 - [Auth Routes](#auth-routes)
      - [Login User](#login)
      - [Register User](#register)
+     - [Firebase](#firebase)
+     - [Slack](#slack)
+- [Email Routes](#email-routes)
+    - [Send Email Invites](#send-email-invites)
 - [User Routes](#user-routes)
      - [Get Users](#get-users)
           - [Get User By Id](#get-user-by-id)
@@ -70,12 +73,78 @@ yarn server
 - [Reponse Routes](#response-routes)
      - [Get Responses](#get-responses)
           - [Get All Responses](#get-all-responses)
+- [Slack Routes](#slack-routes)
+
+
+# SUMMARY TABLE OF API ENDPOINTS
+#### Authorization Routes
+
+| Method | Endpoint                | Access Control | Description                                  |
+| ------ | ----------------------- | -------------- | -------------------------------------------- |
+| POST    | `/auth/register` | all users      | Adds a user object to the users' table. |
+| POST    | `/auth/login` | all users         | Checks a user's email and password against the users' table and sends back a token if successful             |
+| POST | `/auth/firebase` | all users         | Creates a new entry on Users' table or checks Firebase credentials against an existing entry. Returns a valid token on success.|
+| GET | `/auth/slack/` | authenticated users | Accesses a user's Slack account information and updates their record in the Users' table with a current Slack Access token, user ID, and team ID. Returns a JWT reflecting those changes.|
+
+#### Email Routes
+
+| Method | Endpoint                | Access Control | Description                                  |
+| ------ | ----------------------- | -------------- | -------------------------------------------- |
+| POST    | `/email` | authenticated users      | Takes an object of email addresses, creates a `msg` object, and calls a Sendgrid method on it. |
+
+#### User Routes
+| Method | Endpoint                | Access Control | Description                                  |
+| ------ | ----------------------- | -------------- | -------------------------------------------- |
+| GET    | `/users` | authenticated users      | Returns all users. |
+| GET    | `/users/byuser` | authenticated users      | Decodes User ID from Auth token in header and returns that user record.|
+| GET    | `/users/team` | authenticated users      | Decodes Team ID from Auth token in header and returns the user records associated with that team ID.|
+| GET    | `/joinCode/:joinCode` | authenticated users      | Finds the team ID associated with the join code passed in request parameters and updates the team ID field on the user record associated with the user ID decoded from the Auth token in header. |
+| PUT    | `/users` | authenticated users      | Decodes User ID from Auth token in header and updates the User record associated with that ID with the object contained in the request body. |
+| PUT    | `/users/:userId` | admin-authenticated users      | Allows for admin users to edit the records of a given user specified by the request parameters by passing a partial or whole user object in the request body. |
+
+#### Report Routes
+| Method | Endpoint                | Access Control | Description                                  |
+| ------ | ----------------------- | -------------- | -------------------------------------------- |
+| GET    | `/reports` | authenticated users      | Decodes Auth token in header, returns an object of reports associated with teamId of user requesting.|
+| GET    | `/reports/:reportID` | authenticated users      | Returns the report specified in req params, as long as it's associated with the teamId in decoded Auth token in req headers.|
+| POST    | `/reports` | admin-authenticated users      | Decodes Auth token in header, creates an entry in the Reports table, returns an object of reports associated with teamId of user requesting.|
+| DELETE    | `/reports/:id` | admin-authenticated users      | Deletes a report specified by reportId in req params|
+| PUT    | `/:reportId` | admin-authenticated users      | Takes report ID off req params, updates corresponding Report record with req body. Returns an object full of reports by team ID of user requesting.|
+
+#### Response Routes
+
+| Method | Endpoint                | Access Control | Description                                  |
+| ------ | ----------------------- | -------------- | -------------------------------------------- |
+| GET    | `/responses` | authenticated users      | Returns all responses. |
+| POST    | `/responses/:reportId/day` | authenticated users      | Takes report ID off of request parameters, returns the response records associated with that report ID for the current day.  |
+| GET    | `/responses` | authenticated users      | Decodes user ID off of token in request header. Returns all responses from today associated with that user. |
+| GET    | `/responses/:reportId` | authenticated users      | Returns all responses from the last 7 days for a given report specified in the request parameters. |
+| POST    | `/responses/:reportId` | authenticated users      | Decodes the user ID from the token in the request header, inserts the responses passed in the request body with the report ID token inserted as a FK. |
+
+#### Slack Routes
+
+| Method | Endpoint                | Access Control | Description                                  |
+| ------ | ----------------------- | -------------- | -------------------------------------------- |
+| GET    | `/slack/channels` | authenticated users who have integrated slack     | Returns an object with all channels in which that user is currently active . |
+| POST    | `/slack/sendReport` | authenticated users who have integrated slack     | Set in Slack API dashboard. Performs various database functions based on the type of request that comes in from Slack. |
+
 
 # AUTH ROUTES
 
 ## **REGISTER**
 
+_Method Url:_ `/api/auth/register`
+
+_HTTP method:_ **[POST]**
+
+#### **Body**
+> The request body should be a user object, with some or all of the following key:value pairs.
+
 ## **LOGIN**
+
+## **FIREBASE**
+
+## **SLACK**
 
 # USER ROUTES
 
@@ -335,7 +404,10 @@ _HTTP method:_ **[DELETE]**
 
 #### Headers
 
-| name            | type   | required | description         
+| name            | type   | required | description              |
+| --------------- | ------ | -------- | ------------------------ |
+| `Content-Type`  | String | Yes      | Must be application/json |
+| `Authorization` | String | Yes      | JSON Web Token           |     
 
 #### Response
 

@@ -5,6 +5,8 @@ const moment = require('moment');
 const { endOfDay, subDays, startOfDay } = require('date-fns');
 const searchReports = require('../helpers/searchReports');
 
+
+//should we eliminate this route? Isn't it duplicative of the one on line 43? 
 router.get('/', async (req, res) => {
 	try {
 		const responses = await Responses.find();
@@ -21,6 +23,7 @@ router.get('/', async (req, res) => {
 });
 
 // Gets all responses by report for current date
+//shouldn't this be a GET ?
 router.post('/:reportId/day', async (req, res) => {
 	const { reportId } = req.params;
 	const { teamId } = req.decodedJwt;
