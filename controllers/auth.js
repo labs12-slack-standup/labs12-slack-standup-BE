@@ -147,6 +147,11 @@ router.get('/slack/', authenticate, async (req, res, next) => {
 			console.log('got here');
 			return res.status(401).json({ message: 'Slack authentication error' });
 		}
+		// Check slackToken has not already been assigned to previous user
+		const user = await Users.findBy({ slackToken: data.access_token });
+		if (user.length > 0) {
+			return res.status(400).json({ message: 'Browser associated with another user, clear cookies' });
+		}
 		// Query the users table for User resource
 		const resource = await Users.findById(subject);
 		//console.log('Check here', resource);
