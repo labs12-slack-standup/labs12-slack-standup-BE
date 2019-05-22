@@ -246,9 +246,24 @@ yarn server
 
 # Helpers
 
+`filterReports()` -> Returns an array of reports that are due to be published. Current date and time are defined when the function is invoked, and the function will query all reports in the database, compare each reports `schedule` and `scheduleTime` and return the array of reports that match.
 <br>
+`slackReports()` -> Invokes `filterReports()` which returns an array of reports. On each report iteration the `teamId` is queried in the `Users` table, active users found and the current report are appended to a `stitchedReports` array which is then passed to the `button` function, a helper which provides Slack API functionality.
 <br>
+`generateToken()` -> Returns an encoded token that contains `userId` as subject, roles, teamId, joinCode and slackTeamId.
 <br>
+`generateTokenSlack()` -> Returns an encoded token that contains a user object from the `Users` table.
 <br>
+`searchReports(reportId, date)` -> Returns an array of responses, by invoking `Responses findByAndJoin()` model and collating each members response that match `date`.
+<br>
+`searchReportsByUser(reportId, userId, date)` -> Returns an array of responses for one user, by invoking `Responses findByUserAndJoin()` model and collating each members response that match `date`.
+<br>
+`filterByUserAndDate(reportId, userId, date)` -> Returns an array containing a single object with `date` and an array of responses by `userId`
+<br>
+`filterByDate(reportId, date)` ->  Returns an array containing a single object with `date` and an array of responses by all users of a `team`
+<br>
+`filterUserLastSevenDays(reportId, userId)` -> Returns an array containing the last seven days of responses for `one user` for a given `reportId`
+<br>
+`filterSevenDays` -> Returns an array containing the last seven days of responses for `all users` for a given `reportId`
 
 # Middleware
