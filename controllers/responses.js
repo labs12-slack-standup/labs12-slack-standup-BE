@@ -3,7 +3,6 @@ const Responses = require('../models/Responses');
 const Reports = require('../models/Reports');
 const moment = require('moment');
 const { endOfDay, subDays, startOfDay } = require('date-fns');
-
 const { searchReports, searchReportsByUser } = require('../helpers/searchReports');
 
 // router.get('/', async (req, res) => {
@@ -39,8 +38,8 @@ const { searchReports, searchReportsByUser } = require('../helpers/searchReports
 // 	}
 // });
 
-// get a user's responses if they've completed a report today
 
+// get a user's responses if they've completed a report today
 router.get('/', async (req, res) => {
 	const { userId } = req.decodedJwt;
 	const { reportId } = req.body;
@@ -159,7 +158,7 @@ router.post('/:reportId/filter', async (req, res) => {
 		// Check user has permission to view this resource
 		const report = await Reports.findByIdAndTeamId(reportId, teamId);
 		if (report.length < 1) {
-			throw new Error("Your not permitted to view this report");
+			throw new Error("You're not permitted to view this report");
 		}
 		
 		let responses
