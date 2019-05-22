@@ -30,12 +30,11 @@ const filterReports = async () => {
 		//Get hours and mins and turn them into integers
 		let hours = parseInt(`${report.scheduleTime[0]}${report.scheduleTime[1]}`);
 		let minutes = `${report.scheduleTime[3]}${report.scheduleTime[4]}`;
-		//console.log('reportMin', minutes);
+
 		//Get current hour and minutes from the current date
 		const currentHour = getHours(currentDate);
 		const currentMin = getMinutes(currentDate);
-		//console.log('currentMin', currentMin);
-		//console.log('got past current time');
+		
 		//Check to see if the current hour/min matches the hour/min of the report
 		const sameHours = hours === currentHour ? true : false;
 		//console.log('samehours', sameHours);
