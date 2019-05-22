@@ -21,8 +21,11 @@ router.get('/channels', authenticate, async (req, res, next) => {
 		// We need to construct a url with the users slackToken appended as a query param
 		const token = req.decodedJwt.slackToken;
 		const endpoint = `https://slack.com/api/conversations.list?token=${token}`;
+		console.log(req.decodedJwt);
+		console.log('24:', token);
 		const { data } = await axios.get(endpoint);
 		// If the response is successful and the data object contains a channels array extract the id and name properties and return as json
+		console.log('27:', data);
 		if (data.channels) {
 			const channels = data.channels.map(channel => ({
 				id: channel.id,

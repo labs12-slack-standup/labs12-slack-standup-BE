@@ -13,6 +13,8 @@ function generateToken(user) {
 		expiresIn: '7d'
 	};
 
+	console.log('TOKEN -------', payload);
+
 	return jwt.sign(payload, process.env.JWT_SECRET, options);
 }
 
