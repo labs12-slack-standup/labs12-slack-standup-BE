@@ -8,7 +8,7 @@ function generateTokenSlack(user) {
 
 	console.log('SLACK TOKEN ----', user);
 
-	return jwt.sign(user, process.env.JWT_SECRET, options);
+	return jwt.sign({...user, subject: user.id}, process.env.JWT_SECRET, options);
 }
 
 module.exports = {

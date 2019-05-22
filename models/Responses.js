@@ -45,7 +45,7 @@ function findById(id) {
 		.first();
 }
 
-// This allows us to search by reportId join with users table and return user's name
+// This allows us to search by reportId join with users table and return user's name and profile picture.
 function findByAndJoin(reportId, startday, endDay) {
 	return db('responses')
 		.where('reportId', reportId)
@@ -56,7 +56,7 @@ function findByAndJoin(reportId, startday, endDay) {
 		.orderBy('responses.submitted_date', 'desc')
 }
 
-// This allows us to search by reportId join with users table and return user's name
+// This allows us to search by reportId and UserId join with users table and return user's name and profile picture.
 function findByUserAndJoin(reportId, userId, startday, endDay) {
 	return db('responses')
 		.where('reportId', reportId)

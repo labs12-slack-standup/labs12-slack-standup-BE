@@ -24,6 +24,7 @@ router.get('/', async (req, res) => {
 router.get('/byuser', async (req, res) => {
 	try {
 		const id = req.decodedJwt.subject;
+		console.log(req.decodedJwt);
 		const user = await Users.findById(id);
 
 		if (user) {
@@ -37,6 +38,7 @@ router.get('/byuser', async (req, res) => {
 			});
 		}
 	} catch (error) {
+		console.log(error);
 		res.status(500).json({
 			message: 'Sorry but something went wrong while retrieving the user.'
 		});
