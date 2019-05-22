@@ -103,7 +103,7 @@ router.post('/firebase', async ({ body }, res) => {
 		const [existingUser] = await Users.findBy({ email });
 		// If true we generate a token and return it back to the client
 		if (existingUser) {
-			const token = generateToken(existingUser);
+			const token = generateTokenSlack(existingUser);
 			console.log(token);
 			res.status(201).json(token);
 			// If false we add the userObj to the User Model, generate a token and return it back to the client
@@ -146,6 +146,11 @@ router.get('/slack/', authenticate, async (req, res, next) => {
 		if (data.ok === false || data.user_id === null) {
 			console.log('got here');
 			return res.status(401).json({ message: 'Slack authentication error' });
+		}
+		// Check slackToken has not already been assigned to previous user
+		const user = await Users.findBy({ slackToken: data.access_token });
+		if (user.length > 0) {
+			return res.status(400).json({ message: 'Browser associated with another user, clear cookies' });
 		}
 		// Query the users table for User resource
 		const resource = await Users.findById(subject);

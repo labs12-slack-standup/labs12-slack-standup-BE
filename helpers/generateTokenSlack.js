@@ -6,6 +6,8 @@ function generateTokenSlack(user) {
 		expiresIn: '7d'
 	};
 
+	console.log('SLACK TOKEN ----', user);
+
 	return jwt.sign(user, process.env.JWT_SECRET, options);
 }
 
