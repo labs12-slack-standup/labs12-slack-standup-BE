@@ -19,11 +19,8 @@ router.get('/channels', authenticate, async (req, res, next) => {
 		// We need to construct a url with the users slackToken appended as a query param
 		const token = req.decodedJwt.slackToken;
 		const endpoint = `https://slack.com/api/conversations.list?token=${token}`;
-		console.log(req.decodedJwt);
-		console.log('24:', token);
 		const { data } = await axios.get(endpoint);
 		// If the response is successful and the data object contains a channels array extract the id and name properties and return as json
-		console.log('27:', data);
 		if (data.channels) {
 			const channels = data.channels.map(channel => ({
 				id: channel.id,
@@ -32,7 +29,7 @@ router.get('/channels', authenticate, async (req, res, next) => {
 			res.status(200).json(channels);
 		} else {
 			console.log('data.channels is null:', data);
-			res.status(400).json({ message: 'Slack Authentication failed' });
+			res.status(400).json({ message: 'Connecting to Slack was unsuccessful' });
 		}
 	} catch (error) {
 		console.log(error);
@@ -44,9 +41,7 @@ router.get('/channels', authenticate, async (req, res, next) => {
 });
 
 router.post('/sendReport', slackVerification, async (req, res) => {
-	console.log('got here');
 	const payload = JSON.parse(req.body.payload);
-	console.log('payload', payload);
 	const { type, user } = payload;
 
 	const slackUserId = user.id;
@@ -130,7 +125,6 @@ router.post('/sendReport', slackVerification, async (req, res) => {
 
 // open the dialog by calling dialogs.open method and sending the payload
 const openDialog = async (payload, real_name, value, elements) => {
-	//console.log(value);
 	const dialogData = {
 		token: process.env.SLACK_ACCESS_TOKEN,
 		trigger_id: payload.trigger_id,
@@ -156,7 +150,6 @@ const openDialog = async (payload, real_name, value, elements) => {
 		`${apiUrl}/dialog.open`,
 		qs.stringify(dialogData)
 	);
-	//console.log(promise);
 	return promise;
 };
 

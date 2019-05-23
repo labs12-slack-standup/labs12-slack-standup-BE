@@ -54,7 +54,6 @@ const slackReports = async () => {
 	try {
 		//Get all filtered reports from above function
 		const reports = await filterReports();
-		console.log('reports', reports);
 		//Add users to each report
 		const stitchedReports = await Promise.all(
 			reports.map(async report => {
@@ -75,6 +74,8 @@ const slackReports = async () => {
 		return 'The function has successfully ran';
 	} catch (error) {
 		console.log(error);
+		//sentry call
+		throw new Error(error);
 	}
 };
 
@@ -98,7 +99,6 @@ const headers = {
 };
 
 const button = async reports => {
-	//console.log('got here');
 	try {
 		reports.map(async report => {
 			report.users.map(async user => {
@@ -138,10 +138,11 @@ const button = async reports => {
 				const responseMessage = await axios.post(postUrl, response, {
 					headers
 				});
-				//console.log(responseMessage);
 			});
 		});
 	} catch (err) {
 		console.log(err);
+		//sentry call
+		throw new Error(err);
 	}
 };
