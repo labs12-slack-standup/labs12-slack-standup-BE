@@ -250,9 +250,7 @@ yarn server
 <br>
 `slackReports()` -> Invokes `filterReports()` which returns an array of reports. On each report iteration the `teamId` is queried in the `Users` table, active users found and the current report are appended to a `stitchedReports` array which is then passed to the `button` function, a helper which provides Slack API functionality.
 <br>
-`generateToken()` -> Returns an encoded token that contains `userId` as subject, roles, teamId, joinCode and slackTeamId.
-<br>
-`generateTokenSlack()` -> Returns an encoded token that contains a user object from the `Users` table.
+`generateToken()` -> Returns an encoded token that contains `userId` as subject, roles, teamId, joinCode, slackTeamId, slackUserId and slackToken.
 <br>
 `searchReports(reportId, date)` -> Returns an array of responses, by invoking `Responses findByAndJoin()` model and collating each members response that match `date`.
 <br>
@@ -267,3 +265,13 @@ yarn server
 `filterSevenDays` -> Returns an array containing the last seven days of responses for `all users` for a given `reportId`
 
 # Middleware
+
+`authenticate.js` -> Verifies authorization token from the request header, if successful, will add the decoded token to the request as `req.decodedJwt`.
+
+`config.js` -> Returns server configs for Sentry, body-parser, helmet, morgan, cors.
+
+`errorReporting.js` -> Invokes the `errorHandler()` method from Sentry.
+
+`reports.js` -> `adminValidation()` blocks request if user attempts an action that is for admin roles only.
+
+`slackMiddleware` -> blocks request if `x-slack-request-timestamp` is greater than five minutes old or `x-slack-signature` is invalid.
