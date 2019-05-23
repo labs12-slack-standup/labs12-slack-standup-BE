@@ -37,9 +37,8 @@ const filterReports = async () => {
 
 		//Check to see if the current hour/min matches the hour/min of the report
 		const sameHours = hours == currentHour ? true : false;
-		console.log('samehours', sameHours);
 		const sameMin = minutes == currentMin ? true : false;
-		console.log('sameMin', sameMin);
+
 		// Check to see if all checks match true
 		return (
 			report.schedule.includes(dayOfWeek) &&
