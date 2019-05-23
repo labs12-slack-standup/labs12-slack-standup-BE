@@ -77,7 +77,7 @@ router.get('/joinCode/:joinCode', async (req, res) => {
 	try {
 		const teamId = await Users.findByJoinCode(joinCode);
 		console.log(teamId);
-		const updated = await Users.updateTeamId(id, teamId);
+		const updated = await Users.updateTeamId(id, { teamId, joinCode });
 
 		const updatedToken = generateToken(updated);
 		console.log('updateToken', updatedToken);
