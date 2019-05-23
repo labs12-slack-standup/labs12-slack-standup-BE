@@ -5,12 +5,10 @@ const Users = require('../models/Users');
 const Responses = require('../models/Responses');
 const moment = require('moment');
 
-const confirmation = require('../middleware/slackComponents/slackConfirmation');
+const confirmation = require('../helpers/slackConfirmation');
 const authenticate = require('../middleware/authenticate');
 
-const {
-	slackVerification
-} = require('../middleware/slackComponents/slackMiddleware');
+const { slackVerification } = require('../middleware/slackMiddleware');
 
 const apiUrl = 'https://slack.com/api';
 
@@ -33,8 +31,8 @@ router.get('/channels', authenticate, async (req, res, next) => {
 			}));
 			res.status(200).json(channels);
 		} else {
-			console.log('data.channels is null:', data)
-			res.status(400).json({ message: "Slack Authentication failed" });
+			console.log('data.channels is null:', data);
+			res.status(400).json({ message: 'Slack Authentication failed' });
 		}
 	} catch (error) {
 		console.log(error);
@@ -46,7 +44,9 @@ router.get('/channels', authenticate, async (req, res, next) => {
 });
 
 router.post('/sendReport', slackVerification, async (req, res) => {
+	console.log('got here');
 	const payload = JSON.parse(req.body.payload);
+	console.log('payload', payload);
 	const { type, user } = payload;
 
 	const slackUserId = user.id;
@@ -119,7 +119,7 @@ router.post('/sendReport', slackVerification, async (req, res) => {
 			//not sure we need this
 			res.status(200);
 		} catch (error) {
-			//likely need better error handling
+			console.log(error);
 			res.status(500).json({
 				message: error.message
 			});

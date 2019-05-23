@@ -3,7 +3,7 @@ const timingSafeCompare = require('tsscmp');
 
 function isVerified(req) {
 	const signature = req.headers['x-slack-signature'];
-	//console.log('sig', signature);
+	console.log('sig', signature);
 	const timestamp = req.headers['x-slack-request-timestamp'];
 	//console.log('ts', timestamp);
 	const hmac = crypto.createHmac('sha256', process.env.SLACK_SIGNING_SECRET);

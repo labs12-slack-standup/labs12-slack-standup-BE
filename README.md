@@ -265,5 +265,9 @@ yarn server
 `filterUserLastSevenDays(reportId, userId)` -> Returns an array containing the last seven days of responses for `one user` for a given `reportId`
 <br>
 `filterSevenDays` -> Returns an array containing the last seven days of responses for `all users` for a given `reportId`
+<br>
+<br>
+<br>
+<br>
 
 # Middleware
