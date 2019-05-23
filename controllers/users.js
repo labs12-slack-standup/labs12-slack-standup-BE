@@ -5,7 +5,6 @@ const { adminValidation } = require('../middleware/reports');
 
 // Get all users
 router.get('/', async (req, res) => {
-	console.log(req.decodedJwt);
 	try {
 		const users = await Users.find();
 		const message = 'The users were found in the database.';
@@ -25,7 +24,6 @@ router.get('/', async (req, res) => {
 router.get('/byuser', async (req, res) => {
 	try {
 		const id = req.decodedJwt.subject;
-		console.log(req.decodedJwt);
 		const user = await Users.findById(id);
 
 		if (user) {
@@ -76,11 +74,8 @@ router.get('/joinCode/:joinCode', async (req, res) => {
 
 	try {
 		const teamId = await Users.findByJoinCode(joinCode);
-		console.log(teamId);
-		const updated = await Users.updateTeamId(id, teamId);
-
+		const updated = await Users.updateTeamId(id, { teamId, joinCode });
 		const updatedToken = generateToken(updated);
-		console.log('updateToken', updatedToken);
 		res.status(202).json({
 			message: 'The user has successfully joined their team.',
 			updatedToken

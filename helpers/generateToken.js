@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 
 function generateToken(user) {
-	console.log('4', user)
 	const payload = {
 		subject: user.id || user.subject,
 		roles: user.roles,
@@ -15,8 +14,6 @@ function generateToken(user) {
 	const options = {
 		expiresIn: '7d'
 	};
-
-	console.log('TOKEN -------', payload);
 
 	return jwt.sign(payload, process.env.JWT_SECRET, options);
 }
