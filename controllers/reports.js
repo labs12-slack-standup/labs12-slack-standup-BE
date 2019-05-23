@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const Reports = require('../models/Reports');
-const { adminValidation } = require('../middleware/validation/reports');
-const formatDateNextPublishedDate = require('../helpers/nextPublishedDate');
+const { adminValidation } = require('../middleware/reports');
 
 // This route will return all reports by Team ID
 router.get('/', async (req, res) => {
@@ -63,16 +62,7 @@ router.post('/', adminValidation, async (req, res) => {
 	//destructuring teamId from decoded token
 	const { teamId } = req.decodedJwt;
 
-	// calculate next publish date;
-	const schedule = JSON.parse(req.body.schedule);
-	// req.body.created_at is a placeholder value, we need check if the
-	// report needs publishing today, if true format today's date and time
-	const date = req.body.created_at;
-	// formatDateNextPublishedDate will only formats a date in the future and it's primary
-	// use is for updating reports extracted from the cron job.
-	const nextPublishDate = formatDateNextPublishedDate(date, schedule);
-
-	const newReport = { ...req.body, teamId, nextPublishDate };
+	const newReport = { ...req.body, teamId };
 
 	try {
 		const report = await Reports.add(newReport);

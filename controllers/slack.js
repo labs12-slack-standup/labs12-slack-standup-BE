@@ -5,12 +5,12 @@ const Users = require('../models/Users');
 const Responses = require('../models/Responses');
 const moment = require('moment');
 
-const confirmation = require('../middleware/slackComponents/slackConfirmation');
+const confirmation = require('../helpers/slackConfirmation');
 const authenticate = require('../middleware/authenticate');
 
 const {
 	slackVerification
-} = require('../middleware/slackComponents/slackMiddleware');
+} = require('../middleware/slackMiddleware');
 
 const apiUrl = 'https://slack.com/api';
 
@@ -119,7 +119,7 @@ router.post('/sendReport', slackVerification, async (req, res) => {
 			//not sure we need this
 			res.status(200);
 		} catch (error) {
-			//likely need better error handling
+			console.log(error);
 			res.status(500).json({
 				message: error.message
 			});

@@ -1,12 +1,15 @@
 const jwt = require('jsonwebtoken');
 
 function generateToken(user) {
+	console.log('4', user)
 	const payload = {
-		subject: user.id,
+		subject: user.id || user.subject,
 		roles: user.roles,
 		teamId: user.teamId,
 		joinCode: user.joinCode,
-		slackTeamId: user.slackTeamId
+		slackTeamId: user.slackTeamId,
+		slackUserId: user.slackUserId,
+		slackToken: user.slackToken,
 	};
 
 	const options = {
