@@ -28,19 +28,17 @@ const filterReports = async () => {
 	//Filter all reports to see if it is ready to be sent out
 	return reports.filter(report => {
 		//Get hours and mins and turn them into integers
-		let hours = parseInt(`${report.scheduleTime[0]}${report.scheduleTime[1]}`);
-		let minutes = `${report.scheduleTime[3]}${report.scheduleTime[4]}`;
-		//console.log('reportMin', minutes);
+		let hours = getHours(`2000-01-01T${report.scheduleTime}`);
+		let minutes = getMinutes(`2000-01-01T${report.scheduleTime}`);
+
 		//Get current hour and minutes from the current date
 		const currentHour = getHours(currentDate);
 		const currentMin = getMinutes(currentDate);
-		//console.log('currentMin', currentMin);
-		//console.log('got past current time');
+
 		//Check to see if the current hour/min matches the hour/min of the report
-		const sameHours = hours === currentHour ? true : false;
-		//console.log('samehours', sameHours);
+		const sameHours = hours == currentHour ? true : false;
 		const sameMin = minutes == currentMin ? true : false;
-		//console.log('sameMin', sameMin);
+
 		// Check to see if all checks match true
 		return (
 			report.schedule.includes(dayOfWeek) &&
@@ -127,7 +125,7 @@ const button = async reports => {
 										type: 'button',
 										text: {
 											type: 'plain_text',
-											text: 'Button',
+											text: 'Respond',
 											emoji: true
 										},
 										value: JSON.stringify(report)

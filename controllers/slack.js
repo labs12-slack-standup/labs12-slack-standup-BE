@@ -8,9 +8,7 @@ const moment = require('moment');
 const confirmation = require('../helpers/slackConfirmation');
 const authenticate = require('../middleware/authenticate');
 
-const {
-	slackVerification
-} = require('../middleware/slackMiddleware');
+const { slackVerification } = require('../middleware/slackMiddleware');
 
 const apiUrl = 'https://slack.com/api';
 
@@ -33,8 +31,8 @@ router.get('/channels', authenticate, async (req, res, next) => {
 			}));
 			res.status(200).json(channels);
 		} else {
-			console.log('data.channels is null:', data)
-			res.status(400).json({ message: "Slack Authentication failed" });
+			console.log('data.channels is null:', data);
+			res.status(400).json({ message: 'Slack Authentication failed' });
 		}
 	} catch (error) {
 		console.log(error);
@@ -46,7 +44,9 @@ router.get('/channels', authenticate, async (req, res, next) => {
 });
 
 router.post('/sendReport', slackVerification, async (req, res) => {
+	console.log('got here');
 	const payload = JSON.parse(req.body.payload);
+	console.log('payload', payload);
 	const { type, user } = payload;
 
 	const slackUserId = user.id;
