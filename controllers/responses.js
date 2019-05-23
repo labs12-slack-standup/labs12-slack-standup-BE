@@ -2,42 +2,9 @@ const router = require('express').Router();
 const Responses = require('../models/Responses');
 const Reports = require('../models/Reports');
 const moment = require('moment');
-const { endOfDay, subDays, startOfDay } = require('date-fns');
-const { searchReports, searchReportsByUser } = require('../helpers/searchReports');
+const { endOfDay, startOfDay } = require('date-fns');
+const { searchReports } = require('../helpers/searchReports');
 const { filterByUserAndDate, filterByDate, filterUserLastSevenDays, filterSevenDays } = require('../helpers/filters');
-
-// router.get('/', async (req, res) => {
-// 	try {
-// 		const responses = await Responses.find();
-// 		const message = 'The responses were found in the database.';
-// 		res.status(200).json({ message, responses });
-// 	} catch (error) {
-// 		res.status(500).json({
-// 			message:
-// 				'Sorry but something went wrong while retrieving the list of responses.'
-// 		});
-
-// 		throw new Error(error);
-// 	}
-// });
-
-// Gets all responses by report for current date
-// router.post('/:reportId/day', async (req, res) => {
-// 	const { reportId } = req.params;
-// 	const { teamId } = req.decodedJwt;
-// 	const day = new Date(req.body.date);
-// 	try {
-// 		await Reports.findById(reportId, teamId);
-// 		const batch = {
-// 			date: day,
-// 			responses: await searchReports(reportId, day)
-// 		};
-// 		res.status(200).json([batch]);
-// 	} catch (err) {
-// 		console.log(err);
-// 		throw new Error(err);
-// 	}
-// });
 
 
 // get a user's responses if they've completed a report today
@@ -60,6 +27,9 @@ router.get('/', async (req, res) => {
 		}
 	} catch (error) {
 		console.log(error);
+		res.status(500).json({
+			message: error.message
+		});
 		throw new Error(error);
 	}
 });
@@ -147,6 +117,9 @@ router.get('/:reportId', async (req, res) => {
 		res.status(200).json(responses);
 	} catch (err) {
 		console.log(err);
+		res.status(500).json({
+			message: err.message
+		});
 		throw new Error(err);
 	}
 });
@@ -175,6 +148,10 @@ router.post('/:reportId/filter', async (req, res) => {
 		res.status(200).json({ clickedDate: date, clickedResponder: user , responses });
 	} catch (err) {
 		console.log(err);
+		res.status(500).json({
+			message: err.message
+		});
+		throw new Error(err);
 	}
 })
 

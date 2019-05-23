@@ -1,62 +1,11 @@
 const router = require('express').Router();
-const bcrypt = require('bcryptjs');
 const Users = require('../models/Users');
 const moment = require('moment');
 const axios = require('axios');
 const qs = require('qs');
 const { generateToken } = require('../helpers/generateToken');
-const { generateTokenSlack } = require('../helpers/generateTokenSlack');
 const admin = require('firebase-admin');
 const authenticate = require('../middleware/authenticate');
-
-router.post('/register', async (req, res) => {
-	try {
-		let user = req.body;
-
-		let existingUser = await Users.findBy({ email: user.email });
-		if (existingUser.length) {
-			return res.status(409).json({
-				message: 'Sorry but that email already exists'
-			});
-		}
-
-		user.password = await bcrypt.hashSync(user.password, 10);
-		let newUser = await Users.add(user);
-		token = await generateToken(newUser);
-
-		res.status(201).json(token);
-	} catch (error) {
-		res.status(500).json({
-			message: 'Sorry but something went wrong while registering',
-			error
-		});
-
-		throw new Error(error);
-	}
-});
-
-router.post('/login', async (req, res) => {
-	try {
-		const { email, password } = req.body;
-
-		const user = await Users.findBy({ email }).first();
-
-		if (user && bcrypt.compareSync(password, user.password)) {
-			const token = generateToken(user);
-			return res.status(200).json({ token });
-		}
-
-		return res.status(401).json({
-			message: 'Sorry incorrect username or password'
-		});
-	} catch (error) {
-		res.status(500).json({
-			message: 'Sorry but something went wrong while logging in'
-		});
-
-		throw new Error(error);
-	}
-});
 
 // Firebase config - to be extracted out to another file.
 
@@ -103,7 +52,7 @@ router.post('/firebase', async ({ body }, res) => {
 		const [existingUser] = await Users.findBy({ email });
 		// If true we generate a token and return it back to the client
 		if (existingUser) {
-			const token = generateTokenSlack(existingUser);
+			const token = generateToken(existingUser);
 			console.log(token);
 			res.status(201).json(token);
 			// If false we add the userObj to the User Model, generate a token and return it back to the client
@@ -125,6 +74,7 @@ router.post('/firebase', async ({ body }, res) => {
 router.get('/slack/', authenticate, async (req, res, next) => {
 	//console.log('got here?');
 	const { subject, roles, teamId } = req.decodedJwt;
+	console.log('77', subject);
 	const payload = qs.stringify({
 		client_id: process.env.SLACK_CLIENT_ID,
 		client_secret: process.env.SLACK_CLIENT_SECRET,
@@ -142,7 +92,7 @@ router.get('/slack/', authenticate, async (req, res, next) => {
 			payload,
 			headers
 		);
-		console.log('data', data);
+		console.log('data 95', data);
 		if (data.ok === false || data.user_id === null) {
 			console.log('got here');
 			return res.status(401).json({ message: 'Slack authentication error' });
@@ -161,18 +111,18 @@ router.get('/slack/', authenticate, async (req, res, next) => {
 			slackUserId: data.user_id,
 			slackTeamId: data.team_id
 		};
-		console.log('slackObj', slackObj);
+		console.log('slackObj 114', slackObj);
 		if (resource.slackToken === null) {
 			await Users.update(subject, slackObj);
 			const user = { subject, roles, teamId, ...slackObj };
-			console.log('user', user);
-			const token = generateTokenSlack(user);
+			console.log('user 118', user);
+			const token = generateToken(user);
 			return res.status(202).json({ token });
 		} else {
 			// If resource slackToken !== null, then create token Obj
 			const user = { subject, roles, teamId, ...slackObj };
 			console.log('user token null', user);
-			const token = generateTokenSlack(user);
+			const token = generateToken(user);
 			return res.status(202).json({ token });
 		}
 	} catch (err) {

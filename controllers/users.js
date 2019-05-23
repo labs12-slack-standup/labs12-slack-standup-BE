@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const Users = require('../models/Users');
 const { generateToken } = require('../helpers/generateToken');
-const { adminValidation } = require('../middleware/validation/reports');
+const { adminValidation } = require('../middleware/reports');
 
 // Get all users
 router.get('/', async (req, res) => {
@@ -11,6 +11,7 @@ router.get('/', async (req, res) => {
 		const message = 'The users were found in the database.';
 		res.status(200).json({ message, users });
 	} catch (error) {
+		console.log(error);
 		res.status(500).json({
 			message:
 				'Sorry but something went wrong while retrieving the list of users'
@@ -50,7 +51,6 @@ router.get('/byuser', async (req, res) => {
 // Get all users for a team by teamId
 router.get('/team', async (req, res) => {
 	const { teamId } = req.decodedJwt;
-
 	try {
 		const users = await Users.findByTeam(teamId);
 
@@ -59,6 +59,7 @@ router.get('/team', async (req, res) => {
 			users
 		});
 	} catch (error) {
+		console.log(error);
 		res.status(500).json({
 			message:
 				'Sorry but something went wrong while retrieving the users for this team.'
@@ -110,6 +111,7 @@ router.put('/', async (req, res) => {
 			token
 		});
 	} catch (error) {
+		console.log(error);
 		res.status(500).json({
 			message: 'Sorry, there was an error when updating the user.'
 		});
@@ -134,6 +136,7 @@ router.delete('/', async (req, res) => {
 			});
 		}
 	} catch (error) {
+		console.log(error);
 		res.status(500).json({
 			message: 'Sorry, there was an error deleting the user.'
 		});
@@ -155,6 +158,7 @@ router.put('/:userId', adminValidation, async (req, res) => {
 			token
 		});
 	} catch (error) {
+		console.log(error);
 		res.status(500).json({
 			message: 'Sorry, there was an error when updating the user.'
 		});
