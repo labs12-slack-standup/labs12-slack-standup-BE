@@ -4,6 +4,8 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const cors = require('cors');
 
+
+//interprets requests sent from Slack to our endpoints
 const rawBodyBuffer = (req, res, buf, encoding) => {
 	if (buf && buf.length) {
 		req.rawBody = buf.toString(encoding || 'utf8');

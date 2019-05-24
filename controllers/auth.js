@@ -24,7 +24,7 @@ const config = {
 
 admin.initializeApp({ credential: admin.credential.cert(config) });
 
-// UPDATES NEEDED: We will need to bring in the timezone.
+
 router.post('/firebase', async ({ body }, res) => {
 	// deconstruct access token
 	const { accessToken } = body.user.stsTokenManager;

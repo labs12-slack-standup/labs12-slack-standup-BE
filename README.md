@@ -1,13 +1,6 @@
 # **SLACK STANDUP API**
 
-Back-end Labs Project
-
-# **Maintainers**
-
-[@AAsriyan](https://github.com/AAsriyan)
-[@erin-koen](https://github.com/erin-koen)
-[@mikaelacurrier](https://github.com/mikaelacurrier)
-[@shaunmcarmody](https://github.com/shaunmcarmody)
+This is the backend for the Lambda Labs 12 project [Stand-Em-Ups](www.stand-em-ups.com). The product runs aysnchronous standup meetings for teams via a web app or Slack. Managers can create teams and customize reports which are comprised of a set of questions and schedule. Those questions are delivered to team members on the schedule determined by the manager. Team members respond in the app or via a Slack DM. Responses are then displayed for the entire team to see.  
 
 # **Deployed Backend**
 
@@ -21,6 +14,7 @@ Back-end Labs Project
 - [Body parser](https://www.npmjs.com/package/body-parser): `Parse incoming request bodies in a middleware before your handlers.`
 - [Bcryptjs](https://www.npmjs.com/package/body-parser): `Allows you to store passwords securely in your database.`
 - [Jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken): `Generate and verify json web tokens to maintain a stateless api.`
+- [Cron](https://www.npmjs.com/package/cron): `Cron is a tool that allows you to execute something on a schedule`.
 - [Knex](https://www.npmjs.com/package/knex): `Knex.js is a "batteries included" SQL query builder for Postgres, MSSQL, MySQL, MariaDB, SQLite3, Oracle, and Amazon Redshift designed to be flexible, portable, and fun to use.`
 - [Knex-cleaner](https://www.npmjs.com/package/knex-cleaner): `Helper library to clean a PostgreSQL, MySQL or SQLite3 database tables using Knex.`
 - [Pg](https://www.npmjs.com/package/pg): `Non-blocking PostgreSQL client for Node.js.`
@@ -51,18 +45,31 @@ yarn server
 
 # **Table of Contents**
 
+- [Third Party Integrations](#third-party-integrations)
+    - [Authentication And User Management](#authentication-and-user-management)
+    - [Slack](#slack)
 - [Summary Table of API Endpoints](#summary-table-of-api-endpoints)
 - [Database Table Schema](#database-table-schema)
 - [Database Models](#database-models)
-- [Middleware](#middleware)
 - [Helpers](#helpers)
+- [Middleware](#middleware)
+- [Environment Variables](#environment-variables)
+- [Maintainers](#maintainers)
 
 
+# Third Party Integrations
 
+## Authentication and User Management
+
+Authentication is handled via Firebase Auth, which is implemented in the `/controllers/auth.js` using a JSON object provided by [Firebase](https://firebase.google.com/products/auth/) in the management console and customized here with environment variables. A user will sign up or log in via a Firebase component on the front end, which then makes a post call to our Firebase endpoint, delivering an access token in the request body. The endpoint verifies the token using a Firebase `auth` method, then checks the users table. If the user exists, we generate a JWT using a helper found in `/helpers/generateToken.js`, and send it back to the client with a `201` status. If the user does not exist, we insert it into the `Users` table, generate a token, and send the token back with another `201` status. 
+
+## Slack
+
+The [Slack API](https://api.slack.com/start/building) allows for users to recieve reports via DM and respond in kind. That being the case, information needs to be sent from the database `to` an incoming webhook created in the Slack App dashboard. Requests coming `from` Slack are sent to 
 
 # SUMMARY TABLE OF API ENDPOINTS
 
->Aside from `auth/firebase` all requests must be made with a header that includes the JWT returned from the POST request. The header serves several purposes, among them authentication and request specificity (many requests read the user's ID from decoded token). Additionally, requests made to routes protected by the admin validation middleware must include a token from a user whose role is `admin`. Request headers must be formatted as such:
+Aside from `auth/firebase` all requests must be made with a header that includes the JWT returned from the POST request. The header serves several purposes, among them authentication and request specificity (many requests read the user's ID from decoded token). Additionally, requests made to routes protected by the admin validation middleware must include a token from a user whose role is `admin`. Request headers must be formatted as such:
 
 | name            | type   | required | description              |
 | --------------- | ------ | -------- | ------------------------ |
@@ -190,54 +197,54 @@ yarn server
 #### USERS
 
 `add(user)` -> Inserts the provided new User object, returns that object
-<br>`find()` -> Returns an array of all User objects
-<br>`findBy(filter)` -> Returns an array of all User objects where `filter`
-<br>`findByRole(role)` -> Returns an array of all User objects with a given role 
-<br>`findByJoinCode(joinCode)` -> Returns the team ID for the User record associated with the provided joinCode
-<br>`findById(userId)` -> Returns the User associated with the provided user ID
-<br>`findBySlackId(slackId)` -> Returns the User associated with the provided Slack ID
-<br>`findByTeam(teamId)` -> Returns an array of all Users associated with the provided team ID
-<br>`findByEmail(email)` -> Returns the User associated with the provided email
-<br>`update(userId, user)` -> Edits the User record associated with the provided User ID with the information contained in the provided User object
-<br>`updateTeamId(userId, teamId)` -> Updates the teamId field on the User record associated with the provided User ID with the provided teamId
-<br>`remove(userId)` -> Removes the User record associated with the provided userId
-<br>
+<br><br>`find()` -> Returns an array of all User objects
+<br><br>`findBy(filter)` -> Returns an array of all User objects where `filter`
+<br><br>`findByRole(role)` -> Returns an array of all User objects with a given role 
+<br><br>`findByJoinCode(joinCode)` -> Returns the team ID for the User record associated with the provided joinCode
+<br><br>`findById(userId)` -> Returns the User associated with the provided user ID
+<br><br>`findBySlackId(slackId)` -> Returns the User associated with the provided Slack ID
+<br><br>`findByTeam(teamId)` -> Returns an array of all Users associated with the provided team ID
+<br><br>`findByEmail(email)` -> Returns the User associated with the provided email
+<br><br>`update(userId, user)` -> Edits the User record associated with the provided User ID with the information contained in the provided User object
+<br><br>`updateTeamId(userId, teamId)` -> Updates the teamId field on the User record associated with the provided User ID with the provided teamId
+<br><br>`remove(userId)` -> Removes the User record associated with the provided userId
+<br><br>
 
 #### REPORTS
 
 `add(report)` -> Inserts the provided Report object, returns that object
-<br>
+<br><br>
 `find()` -> Retuns an array of all Report objects
-<br>
+<br><br>
 `findBy(filter)` -> Returns an array of all Report objects where `filter`
-<br>
+<br><br>
 `findById(reportId)` -> Returns the Report object associated with the provided report ID
-<br>
+<br><br>
 `findByTeam(teamId)` -> Returns an array of Report objects associated with the provided team ID
-<br>
+<br><br>
 `findByUserId(userId)` -> Returns an array of all report 
-<br>
+<br><br>
 `findByIdAndTeamId(reportId, teamId)` -> Returns the Report record associated with the provided report ID and team ID
-<br>
+<br><br>
 `update(id, teamId, report)` -> Updates the Report record associated with the provided report ID and team ID with the new information contained in the provided Report object
-<br>
+<br><br>
 `remove(reportId)` -> Deletes the Report record associated with the provided report ID
 <br>
-
+<br>
 #### RESPONSES
 
 `add(response)` -> Inserts the provided Response object, returns that object
-<br>
+<br><br>
 `find()` -> Returns an array of all Response objects
-<br>
+<br><br>
 `findBy(filter)` -> Returns an array of all Response objects where `filter`
-<br>
+<br><br>
 `findById(responseId)` -> Returns the Response object associated with the provided response ID
-<br>
-`findByAndJoin(reportId, startDay, endDay)` -> Returns an array of objects associated with a provided report ID between two provided dates. Object keys are userId', 'users.fullName', 'users.profilePic', 'responses.id', 'responses.question', 'responses.answer', 'responses.submitted_date'. They are chronologically ordered from newest to oldest based on responses.submitted_date 
-<br>
-`findByUserAndJoin(reportId, userId, startDay, endDay)` -> Returns an array of objects associated with a provided report ID AND a provided user ID between two provided dates. Object keys are userId', 'users.fullName', 'users.profilePic', 'responses.id', 'responses.question', 'responses.answer', 'responses.submitted_date'. They are chronologically ordered from newest to oldest based on responses.submitted_date 
-<br>
+<br><br>
+`findByAndJoin(reportId, startDay, endDay)` -> Returns an array of objects associated with a provided report ID between two provided dates. Object keys are `userId`, `users.fullName`, `users.profilePic`, `responses.id`, `responses.question`, `responses.answer`, `responses.submitted_date`. They are chronologically ordered from newest to oldest based on `responses.submitted_date`.
+<br><br>
+`findByUserAndJoin(reportId, userId, startDay, endDay)` -> Returns an array of objects associated with a provided report ID AND a provided user ID between two provided dates. Object keys are `userId`, `users.fullName`, `users.profilePic`, `responses.id`, `responses.question`, `responses.answer`, `responses.submitted_date`. They are chronologically ordered from newest to oldest based on `responses.submitted_date`.
+<br><br>
 `findTodays(userId, reportId, startDay, endDay)` -> Returns an array of all Response objects associated with the user ID and the report ID between the startDay and the endDay
 <br>
 <br>
@@ -247,22 +254,28 @@ yarn server
 # Helpers
 
 `filterReports()` -> Returns an array of reports that are due to be published. Current date and time are defined when the function is invoked, and the function will query all reports in the database, compare each reports `schedule` and `scheduleTime` and return the array of reports that match.
-<br>
+<br><br>
 `slackReports()` -> Invokes `filterReports()` which returns an array of reports. On each report iteration the `teamId` is queried in the `Users` table, active users found and the current report are appended to a `stitchedReports` array which is then passed to the `button` function, a helper which provides Slack API functionality.
-<br>
+
+<br><br>
 `generateToken()` -> Returns an encoded token that contains `userId` as subject, roles, teamId, joinCode, slackTeamId, slackUserId and slackToken.
-<br>
+<br><br>
+
 `searchReports(reportId, date)` -> Returns an array of responses, by invoking `Responses findByAndJoin()` model and collating each members response that match `date`.
-<br>
+<br><br>
 `searchReportsByUser(reportId, userId, date)` -> Returns an array of responses for one user, by invoking `Responses findByUserAndJoin()` model and collating each members response that match `date`.
-<br>
+<br><br>
 `filterByUserAndDate(reportId, userId, date)` -> Returns an array containing a single object with `date` and an array of responses by `userId`
-<br>
+<br><br>
 `filterByDate(reportId, date)` ->  Returns an array containing a single object with `date` and an array of responses by all users of a `team`
-<br>
+<br><br>
 `filterUserLastSevenDays(reportId, userId)` -> Returns an array containing the last seven days of responses for `one user` for a given `reportId`
-<br>
+<br><br>
 `filterSevenDays` -> Returns an array containing the last seven days of responses for `all users` for a given `reportId`
+<br>
+<br>
+<br>
+<br>
 
 # Middleware
 
@@ -275,3 +288,28 @@ yarn server
 `reports.js` -> `adminValidation()` blocks request if user attempts an action that is for admin roles only.
 
 `slackMiddleware` -> blocks request if `x-slack-request-timestamp` is greater than five minutes old or `x-slack-signature` is invalid.
+
+
+# 3️⃣ Environment Variables
+
+In order for the app to function correctly, the user must set up their own environment variables.
+
+create a .env file that includes the following:
+
+🚫 These are just examples, replace them with the specifics for your app
+    
+    *  STAGING_DB - optional development db for using functionality not available in SQLite
+    *  NODE_ENV - set to "development" until ready for "production"
+    *  JWT_SECRET - you can generate this by using a python shell and running import random''.join([random.SystemRandom().choice('abcdefghijklmnopqrstuvwxyz0123456789!@#\$%^&amp;*(-*=+)') for i in range(50)])
+    *  SENDGRID_API_KEY - this is generated in your Sendgrid account
+    *  stripe_secret - this is generated in the Stripe dashboard
+
+
+# Maintainers
+| ![Arshak Asriyan](https://avatars3.githubusercontent.com/u/45574365?s=400&v=4) | ![Erin Koen](https://avatars0.githubusercontent.com/u/46381469?s=400&v=4) | ![Mikaela Currier](https://avatars0.githubusercontent.com/u/42783498?s=400&v=4) | ![Shaun Carmody](https://avatars3.githubusercontent.com/u/23500510?s=400&v=4) |
+| --------------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------- | 
+| [@AAsriyan](https://github.com/AAsriyan) | [@erin-koen](https://github.com/erin-koen) | [@mikaelacurrier](https://github.com/mikaelacurrier) | [@shaunmcarmody](https://github.com/shaunmcarmody) | 
+
+
+
+

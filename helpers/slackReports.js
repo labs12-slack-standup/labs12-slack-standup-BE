@@ -34,7 +34,6 @@ const filterReports = async () => {
 		//Get current hour and minutes from the current date
 		const currentHour = getHours(currentDate);
 		const currentMin = getMinutes(currentDate);
-
 		//Check to see if the current hour/min matches the hour/min of the report
 		const sameHours = hours == currentHour ? true : false;
 		const sameMin = minutes == currentMin ? true : false;
