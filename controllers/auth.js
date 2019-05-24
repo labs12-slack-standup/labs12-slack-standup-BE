@@ -53,14 +53,11 @@ router.post('/firebase', async ({ body }, res) => {
 		// If true we generate a token and return it back to the client
 		if (existingUser) {
 			const token = generateToken(existingUser);
-			console.log(token);
 			res.status(201).json(token);
 			// If false we add the userObj to the User Model, generate a token and return it back to the client
 		} else {
 			const newUser = await Users.add(userObj);
-			console.log(newUser);
 			const token = generateToken(newUser);
-			console.log(token);
 			res.status(201).json(token);
 		}
 	} catch (error) {
@@ -72,9 +69,7 @@ router.post('/firebase', async ({ body }, res) => {
 });
 
 router.get('/slack/', authenticate, async (req, res, next) => {
-	//console.log('got here?');
 	const { subject, roles, teamId } = req.decodedJwt;
-	console.log('77', subject);
 	const payload = qs.stringify({
 		client_id: process.env.SLACK_CLIENT_ID,
 		client_secret: process.env.SLACK_CLIENT_SECRET,
@@ -84,7 +79,6 @@ router.get('/slack/', authenticate, async (req, res, next) => {
 	const headers = {
 		'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
 	};
-	//console.log('payload', payload);
 	try {
 		// Make Auth request with Slack
 		const { data } = await axios.post(
@@ -92,9 +86,7 @@ router.get('/slack/', authenticate, async (req, res, next) => {
 			payload,
 			headers
 		);
-		console.log('data 95', data);
 		if (data.ok === false || data.user_id === null) {
-			console.log('got here');
 			return res.status(401).json({ message: 'Slack authentication error' });
 		}
 		// Check slackToken has not already been assigned to previous user
@@ -104,24 +96,20 @@ router.get('/slack/', authenticate, async (req, res, next) => {
 		}
 		// Query the users table for User resource
 		const resource = await Users.findById(subject);
-		//console.log('Check here', resource);
 		// If resource slackToken === null, then build slackObj to update the user resource
 		const slackObj = {
 			slackToken: data.access_token,
 			slackUserId: data.user_id,
 			slackTeamId: data.team_id
 		};
-		console.log('slackObj 114', slackObj);
 		if (resource.slackToken === null) {
 			await Users.update(subject, slackObj);
 			const user = { subject, roles, teamId, ...slackObj };
-			console.log('user 118', user);
 			const token = generateToken(user);
 			return res.status(202).json({ token });
 		} else {
 			// If resource slackToken !== null, then create token Obj
 			const user = { subject, roles, teamId, ...slackObj };
-			console.log('user token null', user);
 			const token = generateToken(user);
 			return res.status(202).json({ token });
 		}

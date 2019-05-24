@@ -63,6 +63,8 @@ async function searchReports(reportId, date) {
     return membersArray;
   } catch (err) {
     console.log(err);
+    //sentry call
+    throw new Error(err);
   }
 }
 
@@ -123,5 +125,7 @@ async function searchReportsByUser(reportId, userId, date) {
     return membersArray;
   } catch (err) {
     console.log(err);
+    //sentry call
+    throw new Error(err);
   }
 }

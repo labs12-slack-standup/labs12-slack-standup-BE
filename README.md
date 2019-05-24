@@ -256,11 +256,11 @@ Aside from `auth/firebase` all requests must be made with a header that includes
 `filterReports()` -> Returns an array of reports that are due to be published. Current date and time are defined when the function is invoked, and the function will query all reports in the database, compare each reports `schedule` and `scheduleTime` and return the array of reports that match.
 <br><br>
 `slackReports()` -> Invokes `filterReports()` which returns an array of reports. On each report iteration the `teamId` is queried in the `Users` table, active users found and the current report are appended to a `stitchedReports` array which is then passed to the `button` function, a helper which provides Slack API functionality.
+
 <br><br>
-`generateToken()` -> Returns an encoded token that contains `userId` as subject, roles, teamId, joinCode and slackTeamId.
+`generateToken()` -> Returns an encoded token that contains `userId` as subject, roles, teamId, joinCode, slackTeamId, slackUserId and slackToken.
 <br><br>
-`generateTokenSlack()` -> Returns an encoded token that contains a user object from the `Users` table.
-<br><br>
+
 `searchReports(reportId, date)` -> Returns an array of responses, by invoking `Responses findByAndJoin()` model and collating each members response that match `date`.
 <br><br>
 `searchReportsByUser(reportId, userId, date)` -> Returns an array of responses for one user, by invoking `Responses findByUserAndJoin()` model and collating each members response that match `date`.
@@ -278,6 +278,17 @@ Aside from `auth/firebase` all requests must be made with a header that includes
 <br>
 
 # Middleware
+
+`authenticate.js` -> Verifies authorization token from the request header, if successful, will add the decoded token to the request as `req.decodedJwt`.
+
+`config.js` -> Returns server configs for Sentry, body-parser, helmet, morgan, cors.
+
+`errorReporting.js` -> Invokes the `errorHandler()` method from Sentry.
+
+`reports.js` -> `adminValidation()` blocks request if user attempts an action that is for admin roles only.
+
+`slackMiddleware` -> blocks request if `x-slack-request-timestamp` is greater than five minutes old or `x-slack-signature` is invalid.
+
 
 # 3️⃣ Environment Variables
 
@@ -298,5 +309,7 @@ create a .env file that includes the following:
 | ![Arshak Asriyan](https://avatars3.githubusercontent.com/u/45574365?s=400&v=4) | ![Erin Koen](https://avatars0.githubusercontent.com/u/46381469?s=400&v=4) | ![Mikaela Currier](https://avatars0.githubusercontent.com/u/42783498?s=400&v=4) | ![Shaun Carmody](https://avatars3.githubusercontent.com/u/23500510?s=400&v=4) |
 | --------------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------- | 
 | [@AAsriyan](https://github.com/AAsriyan) | [@erin-koen](https://github.com/erin-koen) | [@mikaelacurrier](https://github.com/mikaelacurrier) | [@shaunmcarmody](https://github.com/shaunmcarmody) | 
+
+
 
 

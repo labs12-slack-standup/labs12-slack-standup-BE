@@ -85,11 +85,11 @@ async function update(id, user) {
 	return findById(id);
 }
 
-async function updateTeamId(id, teamId) {
-	console.log(id, teamId)
+async function updateTeamId(id, user) {
+	console.log(id, user)
 	const editedUser = await db('users')
 		.where({ id })
-		.update({teamId});
+		.update(user);
 	console.log('editedUser', editedUser)
 	return findById(id);
 }
