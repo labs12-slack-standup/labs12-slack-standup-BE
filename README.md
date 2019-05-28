@@ -48,6 +48,7 @@ yarn server
 - [Third Party Integrations](#third-party-integrations)
     - [Authentication And User Management](#authentication-and-user-management)
     - [Slack](#slack)
+    - [SendGrid](#sendgrid)
 - [Summary Table of API Endpoints](#summary-table-of-api-endpoints)
 - [Database Table Schema](#database-table-schema)
 - [Database Models](#database-models)
@@ -66,6 +67,10 @@ Authentication is handled via Firebase Auth, which is implemented in the `/contr
 ## Slack
 
 The [Slack API](https://api.slack.com/start/building) allows for users to recieve reports via DM and respond in kind. That being the case, information needs to be sent from the database `to` an incoming webhook created in the Slack App dashboard. Requests coming `from` Slack are sent to 
+
+## SendGrid
+
+[SendGrid](https://sendgrid.com) allows for Admin users to send email invites to their team members with customized Join Codes. We have installed the SendGrid library, which allows us to collect information on the front end, post it to and endpoint, and call a SendGrid method on it to distribute emails. Note - Outlook users currently do not receive emails sent via Sendgrid. 
 
 # SUMMARY TABLE OF API ENDPOINTS
 
@@ -290,19 +295,31 @@ Aside from `auth/firebase` all requests must be made with a header that includes
 `slackMiddleware` -> blocks request if `x-slack-request-timestamp` is greater than five minutes old or `x-slack-signature` is invalid.
 
 
-# 3️⃣ Environment Variables
+# Environment Variables
 
 In order for the app to function correctly, the user must set up their own environment variables.
 
-create a .env file that includes the following:
+For local development, save a .env file in the root directory with the following information. To deploy, be sure to adjust the service's environment variables accordingly (DB Host through Port are specific to local environments, hosting servce will provde you with the appropriate postgreSQL settings):
 
-🚫 These are just examples, replace them with the specifics for your app
-    
-    *  STAGING_DB - optional development db for using functionality not available in SQLite
-    *  NODE_ENV - set to "development" until ready for "production"
-    *  JWT_SECRET - you can generate this by using a python shell and running import random''.join([random.SystemRandom().choice('abcdefghijklmnopqrstuvwxyz0123456789!@#\$%^&amp;*(-*=+)') for i in range(50)])
-    *  SENDGRID_API_KEY - this is generated in your Sendgrid account
-    *  stripe_secret - this is generated in the Stripe dashboard
+* DB_HOST = your local host
+* DB_DATABASE =y our db name
+* DB_USER = your db username
+* DB_PASS = your db password
+* PORT = your port
+* SENTRY_DSN = your sentry dsn key (get from sentry.io website)
+* JWT_SECRET = put in whatever secret you want here
+* PROJECT_ID = project id from Firebase console
+* PRIVATE_KEY_ID = private key id from Firebase console
+* PRIVATE_KEY = private key from Firebase console
+* CLIENT_EMAIL = client email from Firebase console
+* CLIENT_ID = client id from Firebase console
+* CLIENT_URL = client url from Firebase console
+* SLACK_CLIENT_ID = Client id from Slack API console
+* SLACK_CLIENT_SECRET = Client Secret from Slack API console
+* SLACK_REDIRECT_URI = Slack redirect URI set to local host auth route for dev and deplyed auth route in deployed
+* SLACK_SIGNING_SECRET = in Basic information section on Slack API
+* SLACK_ACCESS_TOKEN = bot token from Slack OAuth section
+* SENDGRID_API_KEY = API key from Sendgrid console
 
 
 # Maintainers
